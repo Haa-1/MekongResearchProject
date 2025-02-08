@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">ResearchProject</string>
+    <string name="title_activity_information">InformationActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_message">Message</string>
+    <string name="title_trip">Trip</string>
+    <string name="title_support">Support</string>
+    <string name="title_settings">Settings</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
