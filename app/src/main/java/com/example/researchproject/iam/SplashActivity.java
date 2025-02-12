@@ -10,7 +10,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.researchproject.MainActivity;
+import com.example.researchproject.HomeMekong;
 import com.example.researchproject.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -44,7 +44,7 @@ public class SplashActivity extends AppCompatActivity {
             startActivity(intent);
         } else {
             //Da login
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, HomeMekong.class);
             startActivity(intent);
 
         }

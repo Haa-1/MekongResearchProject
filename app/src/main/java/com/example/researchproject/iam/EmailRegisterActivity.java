@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.researchproject.MainActivity;
+import com.example.researchproject.HomeMekong;
 import com.example.researchproject.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -151,7 +151,7 @@ public class EmailRegisterActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Intent intent = new Intent(EmailRegisterActivity.this, MainActivity.class);
+                            Intent intent = new Intent(EmailRegisterActivity.this, HomeMekong.class);
                             startActivity(intent);
                             finishAffinity();
                         } else {
