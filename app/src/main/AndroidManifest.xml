@@ -12,9 +12,35 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ResearchProject"
         tools:targetApi="31">
-
+        <activity
+            android:name=".iam.SplashActivity"
+            android:exported="false" />
+        <activity
+            android:name=".InformationActivity"
+            android:exported="false"
+            android:label="@string/title_activity_information" />
+        <activity
+            android:name=".iam.SocialRegisterActivity"
+            android:exported="false"
+            android:label="" />
+        <activity
+            android:name=".iam.EmailRegisterActivity"
+            android:exported="false"
+            android:label="" />
+        <activity
+            android:name=".iam.VerifyPhoneActivity"
+            android:exported="false"
+            android:label="" />
+        <activity
+            android:name=".iam.ForgotPassActivity"
+            android:exported="false"
+            android:label="" />
         <activity
             android:name=".MainActivity"
+            android:exported="false"
+            android:label="" />
+        <activity
+            android:name=".iam.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,37 +48,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
-        <activity
-            android:name=".InformationActivity"
-            android:exported="false"
-            android:label="@string/title_activity_information" />
-
-
-        <activity
-            android:name=".iam.LoginActivity"
-            android:exported="false"
-            android:label="" />
-        <activity
-            android:name=".iam.RegisterActivity"
-            android:exported="false"
-            android:label="" />
-
-        <activity
-            android:name=".iam.RegisterUserActivity"
-            android:exported="false"
-            android:label="" />
-
-        <activity
-            android:name=".iam.LoginOtpActivity"
-            android:exported="false"
-            android:label="" />
-
-        <activity
-            android:name=".iam.ForgotPassActivity"
-            android:exported="false"
-            android:label="" />
     </application>
 
 </manifest>

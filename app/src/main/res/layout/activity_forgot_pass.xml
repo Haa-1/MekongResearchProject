@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".iam.RegisterActivity"
+    tools:context=".iam.SocialRegisterActivity"
     android:orientation="vertical"
     android:layout_margin="20dp"
     >
@@ -14,35 +14,41 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Change Password"
             android:layout_marginBottom="40dp"
-            />
+            android:fontFamily="@font/castoro_titling_regular"
+            android:text="Change Password"
+            android:textSize="24sp" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Email: "
             android:layout_marginBottom="10dp"
-            />
+            android:fontFamily="@font/courier_prime_bold"
+            android:text="Email: "
+            android:textSize="16sp" />
+
         <EditText
             android:id="@+id/edmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/custtomedit"
             android:padding="10dp"
-            />
+            android:textSize="20sp" />
+
         <Button
             android:id="@+id/btnsenemail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/custtombutton"
-            android:text="Send Request"
             android:layout_marginTop="30dp"
-            />
+            android:backgroundTint="#648BB3"
+            android:fontFamily="@font/crafty_girls_regular"
+            android:text="Send Request"
+            android:textSize="20sp" />
     </LinearLayout>
 
 

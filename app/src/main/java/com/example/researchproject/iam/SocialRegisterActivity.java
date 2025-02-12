@@ -2,10 +2,13 @@ package com.example.researchproject.iam;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 /*import com.facebook.AccessToken;
@@ -23,10 +26,11 @@ import com.google.android.gms.tasks.Task;*/
 
 import com.example.researchproject.R;
 
-import java.util.Arrays;
-
-public class RegisterActivity extends AppCompatActivity {
-
+public class SocialRegisterActivity extends AppCompatActivity {
+    TextView tv_login;
+    EditText editTextMobile;
+    Button btnUser, btnFacebook, btnGoogle, btnApple, btn_continue_phone;
+    ImageButton imgbtn_close;
     private static final int RC_SIGN_IN = 100;
     //private GoogleSignInClient googleSignInClient;
  //   private CallbackManager callbackManager;
@@ -34,12 +38,57 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_social_register);
+        tv_login = (TextView) findViewById(R.id.tv_login);
+        btnFacebook = (Button) findViewById(R.id.btnFacebook);
+        btnGoogle = (Button) findViewById(R.id.btnGoogle);
+        btnApple = (Button) findViewById(R.id.btnApple);
+        btnUser = (Button) findViewById(R.id.btnUser);
+        btn_continue_phone = (Button) findViewById(R.id.btn_continue_phone);
+        imgbtn_close = (ImageButton) findViewById(R.id.imgbtn_close);
+        editTextMobile = (EditText) findViewById(R.id.editTextMobile);
 
-        Button btnGoogle = findViewById(R.id.btnGoogle);
-        Button btnFacebook = findViewById(R.id.btnFacebook);
-        Button btnUser = findViewById(R.id.btnUser);
-        Button btnApple = findViewById(R.id.btnApple);
+        tv_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SocialRegisterActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        imgbtn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SocialRegisterActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SocialRegisterActivity.this, EmailRegisterActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        //Dang ky tai khoan bang so dien thoai
+        btn_continue_phone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String mobile = editTextMobile.getText().toString().trim();
+                if(mobile.isEmpty() || mobile.length() < 10){
+                    editTextMobile.setError("Enter a valid mobile");
+                    editTextMobile.requestFocus();
+                    return;
+                }
+                Intent intent = new Intent(SocialRegisterActivity.this, VerifyPhoneActivity.class);
+                intent.putExtra("mobile", mobile);
+                startActivity(intent);
+            }
+        });
+
+
 
         // Google Sign-In Setup
        /*ignInClient = GoogleSignIn.getClient(this, gso);

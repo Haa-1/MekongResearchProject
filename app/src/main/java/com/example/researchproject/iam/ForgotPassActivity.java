@@ -24,7 +24,7 @@ public class ForgotPassActivity extends AppCompatActivity {
         setContentView(R.layout.activity_forgot_pass);
         Button btnsenemail = findViewById(R.id.btnsenemail);
         EditText edmail = findViewById(R.id.edmail);
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
 
 
 
@@ -37,7 +37,7 @@ public class ForgotPassActivity extends AppCompatActivity {
                     return;
                 }
 
-                mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+                auth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {

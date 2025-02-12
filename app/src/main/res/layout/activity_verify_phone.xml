@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".iam.VerifyPhoneActivity"
+    android:orientation="vertical"
+    android:padding="15dp"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="@font/courier_prime_bold"
+        android:text="OTP: "
+        android:textSize="16sp" />
+    <EditText
+        android:id="@+id/editTextCode"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/custtomedit"
+        android:padding="10dp"
+        android:hint="Enter OTP"
+        android:fontFamily="@font/courier_prime_regular"
+
+        />
+
+    <Button
+        android:id="@+id/buttonLignIn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/crafty_girls_regular"
+        android:text="Login"
+        android:backgroundTint="#648BB3"
+        android:textSize="24sp" />
+
+</LinearLayout>
