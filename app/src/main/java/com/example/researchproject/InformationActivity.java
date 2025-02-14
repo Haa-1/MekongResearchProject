@@ -1,5 +1,4 @@
 package com.example.researchproject;
-
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -11,22 +10,15 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.researchproject.databinding.ActivityInformationBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 public class InformationActivity extends AppCompatActivity {
     TextView tv_profile;
     private ActivityInformationBinding binding;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         tv_profile = (TextView) findViewById(R.id.tv_profile);
-
-
-
         binding = ActivityInformationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -37,5 +29,4 @@ public class InformationActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
-
 }

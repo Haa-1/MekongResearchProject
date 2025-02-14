@@ -2,6 +2,7 @@ package com.example.researchproject.iam;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         this.postList = postList;
         this.filteredPostList = new ArrayList<>(postList); // Khởi tạo danh sách lọc ban đầu
     }
+
 
     @NonNull
     @Override
@@ -63,9 +65,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     @Override
     public int getItemCount() {
-        return filteredPostList.size(); // Hiển thị danh sách đã lọc
+        Log.d("PostAdapter", "Số lượng bài đăng: " + filteredPostList.size());
+        return filteredPostList.size();
     }
-
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         TextView txtTitle, txtPrice, txtAddress;
         ImageView imgPost;

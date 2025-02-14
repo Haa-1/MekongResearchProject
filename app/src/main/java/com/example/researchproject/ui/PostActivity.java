@@ -12,6 +12,7 @@ import android.util.Base64;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -20,6 +21,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
+import com.example.researchproject.HomeMekong;
 import com.example.researchproject.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -63,7 +65,7 @@ public class PostActivity extends AppCompatActivity {
     private ImageView imgService;
     private Uri imageUri;
     private Button btnUploadImage;
-
+    private TextView txtImageUrl;
 
     private DatabaseReference databaseReference;
 
@@ -86,6 +88,7 @@ public class PostActivity extends AppCompatActivity {
         btnPost = findViewById(R.id.btnPost);
         imgService = findViewById(R.id.imgService);
         btnUploadImage = findViewById(R.id.btnUploadImage);
+        txtImageUrl = findViewById(R.id.txtImageUrl);
 
         btnUploadImage.setOnClickListener(v -> openFileChooser());
         btnUploadImage.setOnClickListener(v -> checkStoragePermission());
@@ -124,10 +127,11 @@ public class PostActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
-            Uri imageUri = data.getData();
+            imageUri = data.getData(); // Lưu URI vào biến toàn cục
             Glide.with(this).load(imageUri).into(imgService); // Hiển thị ảnh đã chọn
         }
     }
+
 
     // Xử lý khi người dùng cấp quyền truy cập bộ nhớ
     @Override
@@ -142,6 +146,7 @@ public class PostActivity extends AppCompatActivity {
             }
         }
     }
+
     private void checkStoragePermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -172,6 +177,7 @@ public class PostActivity extends AppCompatActivity {
 
         if (imageUri != null) {
             uploadImageToImgur(imageUri, (imageUrl) -> {
+                txtImageUrl.setText(imageUrl); // Cập nhật URL ảnh vào TextView
                 savePostToDatabase(title, serviceInfo, price, rentalTime, address, contact, imageUrl);
                 progressDialog.dismiss();
                 Toast.makeText(PostActivity.this, "Đăng tin thành công!", Toast.LENGTH_SHORT).show();
@@ -186,6 +192,15 @@ public class PostActivity extends AppCompatActivity {
             Toast.makeText(this, "Đăng tin thành công!", Toast.LENGTH_SHORT).show();
             finish();
         }
+        progressDialog.dismiss();
+        Toast.makeText(this, "Đăng tin thành công!", Toast.LENGTH_SHORT).show();
+
+// Quay lại danh sách bài đăng và làm mới RecyclerView
+        Intent intent = new Intent(PostActivity.this, HomeMekong.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+
     }
 
     // Upload ảnh lên Imgur
