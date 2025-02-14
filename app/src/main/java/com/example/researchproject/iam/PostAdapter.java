@@ -78,7 +78,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             txtPrice = itemView.findViewById(R.id.txtPrice);
             txtAddress = itemView.findViewById(R.id.txtAddress);
             imgPost = itemView.findViewById(R.id.imgPost);
-        }
+         }
     }
 
     // ✅ Lọc dữ liệu khi tìm kiếm

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="24dp">
+    android:padding="12dp">
 
     <TextView
         android:id="@+id/txtWelcome"
@@ -13,7 +13,7 @@
         android:text="Chào mừng!"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="5dp" />
 
     <!-- 🔍 Thanh Tìm Kiếm -->
     <SearchView
@@ -26,6 +26,12 @@
         android:elevation="4dp"
         android:padding="8dp"
         android:layout_marginBottom="10dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_marginTop="8dp" />
     <!-- GIF để ẩn/hiện khung chat -->
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/imgToggleChat"
@@ -85,11 +91,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Đăng xuất" />
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="8dp" />
-
 
 </LinearLayout>
