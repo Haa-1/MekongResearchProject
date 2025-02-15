@@ -35,8 +35,8 @@
     <!-- GIF để ẩn/hiện khung chat -->
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/imgToggleChat"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:src="@drawable/chat_animation"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
@@ -72,7 +72,7 @@
         <TextView
             android:id="@+id/txtResponse"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:text="Phản hồi sẽ hiển thị ở đây"
             android:padding="10dp"
             android:background="#FFFFFF"

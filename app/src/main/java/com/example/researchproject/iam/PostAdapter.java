@@ -47,7 +47,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.txtPrice.setText("Giá: " + post.getPrice() + " VND");
         holder.txtAddress.setText("Địa chỉ: " + post.getAddress());
 
-        Glide.with(context).load(post.getImageUrl()).into(holder.imgPost);
+        Glide.with(context).load(post.getImageUrl()).into(holder.imgService);
+        Glide.with(context)
+                .load(post.getImageUrl()) // Load ảnh từ URL
+                .placeholder(R.drawable.background) // Ảnh mặc định nếu chưa tải xong
+                .error(R.drawable.background_blur) // Ảnh mặc định nếu lỗi
+                .into(holder.imgService);
 
         // Xử lý khi nhấn vào bài đăng
         holder.itemView.setOnClickListener(v -> {
@@ -70,14 +75,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         TextView txtTitle, txtPrice, txtAddress;
-        ImageView imgPost;
+        ImageView imgService;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
             txtTitle = itemView.findViewById(R.id.txtTitle);
             txtPrice = itemView.findViewById(R.id.txtPrice);
             txtAddress = itemView.findViewById(R.id.txtAddress);
-            imgPost = itemView.findViewById(R.id.imgPost);
+            imgService = itemView.findViewById(R.id.imgService);
          }
     }
 

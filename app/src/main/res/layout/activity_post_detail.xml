@@ -9,7 +9,7 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/imgPost"
+            android:id="@+id/imgService"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop" />

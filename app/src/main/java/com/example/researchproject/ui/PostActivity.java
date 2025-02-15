@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,6 +35,7 @@ import java.util.HashMap;
 import java.util.Objects;
 
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -220,9 +222,11 @@ public class PostActivity extends AppCompatActivity {
 
             OkHttpClient client = new OkHttpClient();
 
-            // ✅ Fix: Thêm key "image" để gửi đúng định dạng yêu cầu của Imgur
-            RequestBody requestBody = RequestBody.create("image=" + encodedImage,
-                    MediaType.parse("application/x-www-form-urlencoded"));
+            // ✅ Đúng định dạng multipart/form-data cho API Imgur
+            RequestBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("image", encodedImage)
+                    .build();
 
             Request request = new Request.Builder()
                     .url("https://api.imgur.com/3/image")
@@ -233,41 +237,54 @@ public class PostActivity extends AppCompatActivity {
             new Thread(() -> {
                 try {
                     Response response = client.newCall(request).execute();
-                    if (response.isSuccessful()) {
+                    if (response.isSuccessful() && response.body() != null) {
                         String responseData = Objects.requireNonNull(response.body()).string();
                         JSONObject jsonObject = new JSONObject(responseData);
                         String imageUrl = jsonObject.getJSONObject("data").getString("link");
 
+                        Log.d("ImgurUpload", "Ảnh tải lên thành công: " + imageUrl);
                         runOnUiThread(() -> successListener.onSuccess(imageUrl));
                     } else {
+                        Log.e("ImgurUpload", "Lỗi tải ảnh lên Imgur: " + response.message());
                         runOnUiThread(() -> failureListener.onFailure("Tải lên Imgur thất bại."));
                     }
                 } catch (Exception e) {
+                    Log.e("ImgurUpload", "Lỗi khi tải ảnh lên Imgur: " + e.getMessage());
                     runOnUiThread(() -> failureListener.onFailure(e.getMessage()));
                 }
             }).start();
 
         } catch (Exception e) {
+            Log.e("ImgurUpload", "Lỗi đọc file ảnh: " + e.getMessage());
             failureListener.onFailure(e.getMessage());
         }
     }
 
+
+
     // Lưu thông tin bài đăng vào Firebase
     private void savePostToDatabase(String title, String serviceInfo, String price, String rentalTime, String address, String contact, String imageUrl) {
-        String postId = databaseReference.push().getKey();
-        HashMap<String, Object> postMap = new HashMap<>();
-        postMap.put("title", title);
-        postMap.put("serviceInfo", serviceInfo);
-        postMap.put("price", price);
-        postMap.put("rentalTime", rentalTime);
-        postMap.put("address", address);
-        postMap.put("contact", contact);
-        postMap.put("imageUrl", imageUrl);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
+        String postId = databaseReference.push().getKey(); // ✅ Tạo ID duy nhất cho bài đăng
 
         if (postId != null) {
-            databaseReference.child(postId).setValue(postMap);
+            HashMap<String, Object> postMap = new HashMap<>();
+            postMap.put("title", title);
+            postMap.put("serviceInfo", serviceInfo);
+            postMap.put("price", price);
+            postMap.put("rentalTime", rentalTime);
+            postMap.put("address", address);
+            postMap.put("contact", contact);
+            postMap.put("imageUrl", imageUrl); // ✅ Đảm bảo thêm imageUrl vào đây
+
+            Log.d("FirebaseSave", "Dữ liệu đang lưu: " + postMap.toString()); // Log dữ liệu trước khi lưu
+
+            databaseReference.child(postId).setValue(postMap)
+                    .addOnSuccessListener(aVoid -> Log.d("FirebaseSave", "Đăng bài thành công!"))
+                    .addOnFailureListener(e -> Log.e("FirebaseSave", "Lỗi khi đăng bài: " + e.getMessage()));
         }
     }
+
 
     // Interfaces để xử lý callback khi upload ảnh
     interface OnUploadSuccessListener {

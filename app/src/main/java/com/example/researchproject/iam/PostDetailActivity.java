@@ -14,7 +14,7 @@ import com.example.researchproject.R;
 public class PostDetailActivity extends AppCompatActivity {
 
     private TextView txtTitle, txtServiceInfo, txtPrice, txtRentalTime, txtAddress, txtContact;
-    private ImageView imgPost;
+    private ImageView imgService;
     private Button btnAddToCart, btnPay, btnReview;
 
     @Override
@@ -28,7 +28,7 @@ public class PostDetailActivity extends AppCompatActivity {
         txtRentalTime = findViewById(R.id.txtRentalTime);
         txtAddress = findViewById(R.id.txtAddress);
         txtContact = findViewById(R.id.txtContact);
-        imgPost = findViewById(R.id.imgPost);
+        imgService = findViewById(R.id.imgService);
 
         btnAddToCart = findViewById(R.id.btnAddToCart);
         btnPay = findViewById(R.id.btnPay);
@@ -50,7 +50,7 @@ public class PostDetailActivity extends AppCompatActivity {
         txtRentalTime.setText("Thời gian thuê: " + rentalTime);
         txtAddress.setText("Địa chỉ: " + address);
         txtContact.setText("Liên hệ: " + contact);
-        Glide.with(this).load(imageUrl).into(imgPost);
+        Glide.with(this).load(imageUrl).into(imgService);
 
         // ✅ Xử lý sự kiện
         btnAddToCart.setOnClickListener(v -> {
