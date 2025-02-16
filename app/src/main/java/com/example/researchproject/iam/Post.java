@@ -1,12 +1,13 @@
 package com.example.researchproject.iam;
 public class Post {
-    private String title, serviceInfo, price, rentalTime, address, contact, imageUrl;
+    private String postId,title, serviceInfo, price, rentalTime, address, contact, imageUrl;
 
     // Constructor mặc định (cần cho Firebase)
     public Post() {}
 
     // Constructor đầy đủ
-    public Post(String title, String serviceInfo, String price, String rentalTime, String address, String contact, String imageUrl) {
+    public Post(String postId, String title, String serviceInfo, String price, String rentalTime, String address, String contact, String imageUrl) {
+        this.postId = postId;
         this.title = title;
         this.serviceInfo = serviceInfo;
         this.price = price;
@@ -15,7 +16,8 @@ public class Post {
         this.contact = contact;
         this.imageUrl = imageUrl;
     }
-
+    public String getPostId() { return postId; }
+    public void setPostId(String postId) { this.postId = postId; }
     // Getter và Setter
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }

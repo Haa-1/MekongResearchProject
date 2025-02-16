@@ -97,8 +97,6 @@ public class PostActivity extends AppCompatActivity {
 
         databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
 
-
-
 // Kiểm tra quyền truy cập bộ nhớ trước khi chọn ảnh
         btnUploadImage.setOnClickListener(v -> {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -260,8 +258,6 @@ public class PostActivity extends AppCompatActivity {
         }
     }
 
-
-
     // Lưu thông tin bài đăng vào Firebase
     private void savePostToDatabase(String title, String serviceInfo, String price, String rentalTime, String address, String contact, String imageUrl) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
@@ -270,6 +266,7 @@ public class PostActivity extends AppCompatActivity {
         if (postId != null) {
             HashMap<String, Object> postMap = new HashMap<>();
             postMap.put("title", title);
+            postMap.put("postId", postId);
             postMap.put("serviceInfo", serviceInfo);
             postMap.put("price", price);
             postMap.put("rentalTime", rentalTime);

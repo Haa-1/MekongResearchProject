@@ -27,11 +27,17 @@
         android:padding="8dp"
         android:layout_marginBottom="10dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <GridView
+        android:id="@+id/gridView"
         android:layout_width="match_parent"
         android:layout_height="400dp"
-        android:layout_marginTop="8dp" />
+        android:numColumns="2"
+        android:verticalSpacing="8dp"
+        android:horizontalSpacing="8dp"
+        android:padding="8dp"
+        android:gravity="center"
+        android:scrollbars="vertical"/>
+
     <!-- GIF để ẩn/hiện khung chat -->
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/imgToggleChat"

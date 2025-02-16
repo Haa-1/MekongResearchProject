@@ -6,19 +6,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.SearchView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.bumptech.glide.Glide;
 import com.example.researchproject.iam.LoginActivity;
 import com.example.researchproject.iam.Post;
-import com.example.researchproject.iam.PostAdapter;
+import com.example.researchproject.iam.PostAdapterGrid;
+import com.example.researchproject.iam.PostDetailActivity;
 import com.example.researchproject.ui.PostActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -44,8 +41,8 @@ import okhttp3.Response;
 import pl.droidsonroids.gif.GifImageView;
 
 public class HomeMekong extends AppCompatActivity {
-    private RecyclerView recyclerView;
-    private PostAdapter postAdapter;
+    private GridView gridView;
+    private PostAdapterGrid postAdapter;
     private List<Post> postList;
     private DatabaseReference databaseReference;
     private GifImageView imgToggleChat;
@@ -70,8 +67,10 @@ public class HomeMekong extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         // ✅ Ánh xạ View
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        postList = new ArrayList<>();
+        gridView = findViewById(R.id.gridView);
+        postAdapter = new PostAdapterGrid(this, postList);
+        gridView.setAdapter(postAdapter);
         searchView = findViewById(R.id.searchView);
         imgToggleChat = findViewById(R.id.imgToggleChat);
         edtMessage = findViewById(R.id.edtMessage);
@@ -113,13 +112,9 @@ public class HomeMekong extends AppCompatActivity {
             startActivity(new Intent(HomeMekong.this, PostActivity.class));
         });
 
-        // ✅ Khởi tạo danh sách bài đăng
-        postList = new ArrayList<>();
-        postAdapter = new PostAdapter(this, postList);
-        recyclerView.setAdapter(postAdapter);
-
         // ✅ Lắng nghe dữ liệu từ Firebase Realtime Database
         databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
+        // Lắng nghe dữ liệu từ Firebase
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -128,32 +123,51 @@ public class HomeMekong extends AppCompatActivity {
                     Post post = dataSnapshot.getValue(Post.class);
                     if (post != null) {
                         postList.add(post);
-                        Log.d("FirebaseDebug", "Tải bài đăng: " + post.getTitle());
+                        Log.d("FirebaseData", "Đã tải bài đăng: " + post.getTitle());
+                    } else {
+                        Log.e("FirebaseData", "Lỗi: Bài đăng bị null!");
                     }
                 }
 
-                postAdapter.notifyDataSetChanged(); // ✅ Cập nhật dữ liệu sau khi load xong
+                if (postList.isEmpty()) {
+                    Log.e("FirebaseData", "Danh sách bài đăng vẫn rỗng sau khi tải!");
+                }
 
+                postAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("FirebaseDebug", "Lỗi tải dữ liệu: " + error.getMessage());
-                Toast.makeText(HomeMekong.this, "Lỗi tải dữ liệu!", Toast.LENGTH_SHORT).show();
+                Log.e("FirebaseData", "Lỗi Firebase: " + error.getMessage());
             }
         });
 
-        // ✅ Xử lý tìm kiếms
+        // Click vào mỗi item trong GridView
+        gridView.setOnItemClickListener((parent, view, position, id) -> {
+            Post selectedPost = postList.get(position);
+            Intent intent = new Intent(HomeMekong.this, PostDetailActivity.class);
+            intent.putExtra("postId", selectedPost.getPostId());
+            intent.putExtra("title", selectedPost.getTitle());
+            intent.putExtra("serviceInfo", selectedPost.getServiceInfo());
+            intent.putExtra("price", selectedPost.getPrice());
+            intent.putExtra("rentalTime", selectedPost.getRentalTime());
+            intent.putExtra("address", selectedPost.getAddress());
+            intent.putExtra("contact", selectedPost.getContact());
+            intent.putExtra("imageUrl", selectedPost.getImageUrl());
+            startActivity(intent);
+        });
+
+        // Xử lý tìm kiếm
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                postAdapter.getFilter().filter(query);
+                postAdapter.filter(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                postAdapter.getFilter().filter(newText);
+                postAdapter.filter(newText);
                 return false;
             }
         });
@@ -206,9 +220,9 @@ public class HomeMekong extends AppCompatActivity {
                             .getJSONArray("candidates")
                             .getJSONObject(0)
                             .getJSONObject("content")
-                            .getJSONArray("parts")
-                            .getJSONObject(0)
-                            .getString("text");
+                            .getJSONArray("parts") // ✅ Lấy mảng "parts"
+                            .getJSONObject(0) // ✅ Lấy phần tử đầu tiên
+                            .getString("text"); // ✅ Lấy nội dung text
 
                     runOnUiThread(() -> txtResponse.setText(reply));
                 } else {
