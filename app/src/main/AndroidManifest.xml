@@ -17,6 +17,12 @@
         android:theme="@style/Theme.ResearchProject"
         tools:targetApi="31">
         <activity
+            android:name=".MekoAI"
+            android:exported="false" />
+        <activity
+            android:name=".iam.CartActivity"
+            android:exported="false" />
+        <activity
             android:name=".iam.PostDetailActivity"
             android:exported="false" />
         <activity

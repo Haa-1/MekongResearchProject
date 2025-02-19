@@ -1,7 +1,7 @@
 package com.example.researchproject.iam;
 public class Post {
-    private String postId,title, serviceInfo, price, rentalTime, address, contact, imageUrl;
-
+    private String title, serviceInfo, price, rentalTime, address, contact, imageUrl;
+    private String postId;
     // Constructor mặc định (cần cho Firebase)
     public Post() {}
 

@@ -22,13 +22,14 @@ import java.util.List;
 public class PostAdapterGrid extends ArrayAdapter<Post> implements Filterable {
     private Context context;
     private List<Post> postList;
-    private List<Post> filteredPostList;
+    private List<Post> originalPostList; // Danh sách gốc để khôi phục khi tìm kiếm
+
 
     public PostAdapterGrid(Context context, List<Post> postList) {
         super(context, R.layout.item_grid_post, postList);
         this.context = context;
         this.postList = postList;
-        this.filteredPostList = new ArrayList<>(postList);
+        this.originalPostList = new ArrayList<>(postList); // Sao chép danh sách ban đầu
     }
 
     @NonNull
@@ -47,6 +48,7 @@ public class PostAdapterGrid extends ArrayAdapter<Post> implements Filterable {
         // Ánh xạ các View
         TextView txtTitle = convertView.findViewById(R.id.txtTitle);
         ImageView imgPost = convertView.findViewById(R.id.imgService);
+        TextView txtPrice = convertView.findViewById(R.id.txtPrice);
 
         // ✅ Kiểm tra vị trí hợp lệ trước khi truy cập phần tử
         if (position >= postList.size()) {
@@ -57,7 +59,7 @@ public class PostAdapterGrid extends ArrayAdapter<Post> implements Filterable {
         // Gán dữ liệu vào GridView
         Post post = postList.get(position);
         txtTitle.setText(post.getTitle());
-
+        txtPrice.setText("Giá: " + post.getPrice() + " VND");
         Glide.with(context)
                 .load(post.getImageUrl())
                 .placeholder(R.drawable.background)
@@ -65,26 +67,34 @@ public class PostAdapterGrid extends ArrayAdapter<Post> implements Filterable {
                 .into(imgPost);
 
         return convertView;
+
     }
 
 
     // ✅ Thêm bộ lọc tìm kiếm
-    public void filter(String query) {
+    public void filter(String text) {
         List<Post> filteredList = new ArrayList<>();
-        if (query.isEmpty()) {
-            filteredList.addAll(postList);
+        if (text.isEmpty()) {
+            filteredList.addAll(originalPostList); // Hiển thị tất cả nếu ô tìm kiếm rỗng
         } else {
-            String lowerCaseQuery = query.toLowerCase();
-            for (Post post : postList) {
-                if (post.getTitle().toLowerCase().contains(lowerCaseQuery) ||
-                        post.getAddress().toLowerCase().contains(lowerCaseQuery)) {
+            String searchText = text.toLowerCase();
+            for (Post post : originalPostList) {
+                if (post.getTitle().toLowerCase().contains(searchText) ||
+                        post.getServiceInfo().toLowerCase().contains(searchText) ||
+                        post.getAddress().toLowerCase().contains(searchText)) {
                     filteredList.add(post);
                 }
             }
         }
-        clear();
-        addAll(filteredList);
-        notifyDataSetChanged();
+        postList.clear();
+        postList.addAll(filteredList);
+        notifyDataSetChanged(); // Cập nhật UI
     }
+    public void updateData(List<Post> newPostList) {
+        this.postList.clear();               // Xóa danh sách cũ
+        this.postList.addAll(newPostList);   // Thêm dữ liệu mới
+        notifyDataSetChanged();              // Cập nhật lại Adapter
+    }
+
 
 }

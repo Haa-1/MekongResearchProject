@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,7 +24,11 @@ import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.researchproject.HomeMekong;
+import com.example.researchproject.InformationActivity;
+import com.example.researchproject.MekoAI;
 import com.example.researchproject.R;
+import com.example.researchproject.iam.CartActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -68,13 +73,11 @@ public class PostActivity extends AppCompatActivity {
     private Uri imageUri;
     private Button btnUploadImage;
     private TextView txtImageUrl;
-
     private DatabaseReference databaseReference;
-
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int REQUEST_STORAGE_PERMISSION = 100;
     private static final String IMGUR_CLIENT_ID = "eedb98d8d059752"; // Thay bằng Client ID của bạn
-
+    BottomNavigationView bottomNavigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +99,31 @@ public class PostActivity extends AppCompatActivity {
         btnUploadImage.setOnClickListener(v -> checkStoragePermission());
 
         databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        // Xử lý sự kiện khi chọn item trong menu
+        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int itemId = item.getItemId();
+
+                if (itemId == R.id.nav_home) {
+                    startActivity(new Intent(PostActivity.this, HomeMekong.class));
+                } else if (itemId == R.id.nav_ai) {
+                    startActivity(new Intent(PostActivity.this, MekoAI.class)); // Sửa lại tên đúng
+                } else if (itemId == R.id.nav_post) {
+                    startActivity(new Intent(PostActivity.this, PostActivity.class));
+                } else if (itemId == R.id.nav_cart) {
+                    startActivity(new Intent(PostActivity.this, CartActivity.class));
+                } else if (itemId == R.id.nav_info) {
+                    startActivity(new Intent(PostActivity.this, InformationActivity.class));
+                } else {
+                    return false;
+                }
+
+                return true;
+            }
+        });
 
 // Kiểm tra quyền truy cập bộ nhớ trước khi chọn ảnh
         btnUploadImage.setOnClickListener(v -> {
@@ -156,7 +184,6 @@ public class PostActivity extends AppCompatActivity {
             openFileChooser();
         }
     }
-
     // Xử lý đăng bài
     private void uploadPost() {
         String title = edtTitle.getText().toString().trim();

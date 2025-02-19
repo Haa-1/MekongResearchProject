@@ -1,134 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="#FAFAFA">
+    android:orientation="vertical"
+    android:background="#FAFAFA"
+    android:padding="8dp">
 
-    <LinearLayout
+    <!-- 🔹 ScrollView chứa tất cả nội dung -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <!-- Tiêu đề chính -->
+            <TextView
+                android:id="@+id/txtTitleHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ĐĂNG TIN"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="#000000"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Tiêu đề bài đăng -->
+            <EditText
+                android:id="@+id/edtTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Tiêu đề"
+                android:inputType="text"
+                android:padding="12dp"
+                android:background="@drawable/edittext_border"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Thông tin dịch vụ -->
+            <EditText
+                android:id="@+id/edtServiceInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Thông tin dịch vụ"
+                android:inputType="textMultiLine"
+                android:minLines="3"
+                android:padding="12dp"
+                android:background="@drawable/edittext_border"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Ảnh xem trước khi chọn -->
+            <ImageView
+                android:id="@+id/imgService"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/ic_menu_gallery"
+                android:background="#CCCCCC"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Nút chọn hình ảnh -->
+            <Button
+                android:id="@+id/btnUploadImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Chọn Hình Ảnh"
+                android:background="#4CAF50"
+                android:textColor="#FFFFFF"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Hiển thị URL ảnh sau khi upload -->
+            <TextView
+                android:id="@+id/txtImageUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="URL ảnh sẽ hiển thị ở đây"
+                android:textColor="#666666"
+                android:textSize="14sp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Giá dịch vụ -->
+            <EditText
+                android:id="@+id/edtPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Giá"
+                android:inputType="numberDecimal"
+                android:padding="12dp"
+                android:background="@drawable/edittext_border"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Thời gian cho thuê -->
+            <EditText
+                android:id="@+id/edtRentalTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Thời gian cho thuê"
+                android:inputType="text"
+                android:padding="12dp"
+                android:background="@drawable/edittext_border"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Địa chỉ cho thuê -->
+            <EditText
+                android:id="@+id/edtAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Địa chỉ cho thuê"
+                android:inputType="text"
+                android:padding="12dp"
+                android:background="@drawable/edittext_border"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Thông tin liên hệ -->
+            <EditText
+                android:id="@+id/edtContact"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Thông tin liên hệ"
+                android:inputType="text"
+                android:padding="12dp"
+                android:background="@drawable/edittext_border"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Nút Đăng Tin -->
+            <Button
+                android:id="@+id/btnPost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Đăng Tin"
+                android:background="#2196F3"
+                android:textColor="#FFFFFF"
+                android:padding="12dp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- ✅ Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp">
-
-        <!-- Tiêu đề chính -->
-        <TextView
-            android:id="@+id/txtTitleHeader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="ĐĂNG TIN"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:textColor="#000000"
-            android:layout_marginBottom="16dp" />
-
-        <!-- Tiêu đề bài đăng -->
-        <EditText
-            android:id="@+id/edtTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Tiêu đề"
-            android:inputType="text"
-            android:padding="12dp"
-            android:background="@drawable/edittext_border"
-            android:layout_marginBottom="10dp" />
-
-        <!-- Thông tin dịch vụ -->
-        <EditText
-            android:id="@+id/edtServiceInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Thông tin dịch vụ"
-            android:inputType="textMultiLine"
-            android:minLines="3"
-            android:padding="12dp"
-            android:background="@drawable/edittext_border"
-            android:layout_marginBottom="10dp" />
-
-        <!-- Ảnh xem trước khi chọn -->
-        <ImageView
-            android:id="@+id/imgService"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:src="@android:drawable/ic_menu_gallery"
-            android:background="#CCCCCC"
-            android:layout_marginBottom="10dp" />
-
-        <!-- Nút chọn hình ảnh -->
-        <Button
-            android:id="@+id/btnUploadImage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Chọn Hình Ảnh"
-            android:background="#4CAF50"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="8dp" />
-
-        <!-- Hiển thị URL ảnh sau khi upload -->
-        <TextView
-            android:id="@+id/txtImageUrl"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="URL ảnh sẽ hiển thị ở đây"
-            android:textColor="#666666"
-            android:textSize="14sp"
-            android:layout_marginBottom="12dp" />
-
-        <!-- Giá dịch vụ -->
-        <EditText
-            android:id="@+id/edtPrice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Giá"
-            android:inputType="numberDecimal"
-            android:padding="12dp"
-            android:background="@drawable/edittext_border"
-            android:layout_marginBottom="10dp" />
-
-        <!-- Thời gian cho thuê -->
-        <EditText
-            android:id="@+id/edtRentalTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Thời gian cho thuê"
-            android:inputType="text"
-            android:padding="12dp"
-            android:background="@drawable/edittext_border"
-            android:layout_marginBottom="10dp" />
-
-        <!-- Địa chỉ cho thuê -->
-        <EditText
-            android:id="@+id/edtAddress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Địa chỉ cho thuê"
-            android:inputType="text"
-            android:padding="12dp"
-            android:background="@drawable/edittext_border"
-            android:layout_marginBottom="10dp" />
-
-        <!-- Thông tin liên hệ -->
-        <EditText
-            android:id="@+id/edtContact"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Thông tin liên hệ"
-            android:inputType="text"
-            android:padding="12dp"
-            android:background="@drawable/edittext_border"
-            android:layout_marginBottom="12dp" />
-
-        <!-- Nút Đăng Tin -->
-        <Button
-            android:id="@+id/btnPost"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Đăng Tin"
-            android:background="#2196F3"
-            android:textColor="#FFFFFF"
-            android:padding="12dp"
-            android:textStyle="bold" />
-    </LinearLayout>
-</ScrollView>
+        android:layout_gravity="bottom"
+        app:menu="@menu/bottom_nav_menu"/>
+</LinearLayout>

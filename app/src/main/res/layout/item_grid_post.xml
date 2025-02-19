@@ -10,7 +10,7 @@
     <ImageView
         android:id="@+id/imgService"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="100dp"
         android:scaleType="centerCrop"/>
 
     <TextView
@@ -26,7 +26,9 @@
         android:id="@+id/txtPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Giá"
+        android:text="Giá: 0 VND"
+        android:textColor="#FF5722"
         android:textSize="14sp"
         android:padding="4dp"/>
+
 </LinearLayout>
