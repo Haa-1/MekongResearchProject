@@ -18,41 +18,46 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- 🔍 Thanh tìm kiếm -->
-            <SearchView
-                android:id="@+id/searchView"
+            <!-- ✨ Giao tiếp với Gemini API -->
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:queryHint="Tìm kiếm dịch vụ..." />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="6dp">
 
-            <!-- 📋 Hiển thị kết quả từ Firebase -->
+                <EditText
+                    android:id="@+id/edtUserQuery"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Hỏi Meko AI..."
+                    android:background="@android:drawable/edit_text"
+                    android:padding="8dp"
+                    android:layout_marginEnd="8dp"/>
+
+                <ImageButton
+                    android:id="@+id/btnSearchAI"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/search_icon"
+                    android:contentDescription="Gửi đánh giá"/>
+            </LinearLayout>
+            <!-- GridView để hiển thị dữ liệu từ Firebase -->
             <GridView
                 android:id="@+id/gridView"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="wrap_content"
                 android:numColumns="2"
-                android:verticalSpacing="8dp"
-                android:horizontalSpacing="8dp"
-                android:background="#EFEFEF"/>
+                android:verticalSpacing="10dp"
+                android:horizontalSpacing="10dp"
+                android:layout_marginTop="8dp"
+                android:stretchMode="columnWidth" />
 
-            <!-- ✨ Giao tiếp với Gemini API -->
-            <EditText
-                android:id="@+id/edtUserQuery"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Hỏi Meko AI..."
-                android:padding="12dp"
-                android:background="@android:drawable/edit_text" />
 
-            <Button
-                android:id="@+id/btnSearchAI"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Hỏi Meko AI"
-                android:background="#4CAF50"
-                android:textColor="@android:color/white" />
-
-            <!-- 💡 Kết quả từ Gemini -->
             <TextView
                 android:id="@+id/txtAIResponse"
                 android:layout_width="match_parent"

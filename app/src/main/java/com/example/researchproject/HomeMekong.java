@@ -164,23 +164,23 @@ public class HomeMekong extends AppCompatActivity {
 
 
         // Xử lý tìm kiếm
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                if (postAdapter != null) {
-                    postAdapter.filter(query);
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (postAdapter != null) {
-                    postAdapter.filter(newText);
-                }
-                return false;
-            }
-        });
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                if (postAdapter != null) {
+//                    postAdapter.filter(query);
+//                }
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                if (postAdapter != null) {
+//                    postAdapter.filter(newText);
+//                }
+//                return false;
+//            }
+//        });
 
     }
 }

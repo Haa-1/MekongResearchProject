@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import android.widget.ArrayAdapter;
 
 import com.bumptech.glide.Glide;
@@ -31,7 +31,20 @@ public class PostAdapterGrid extends ArrayAdapter<Post> implements Filterable {
         this.postList = postList;
         this.originalPostList = new ArrayList<>(postList); // Sao chép danh sách ban đầu
     }
+    @Override
+    public int getCount() {
+        return postList.size();
+    }
 
+    @Override
+    public Post getItem(int position) {
+        return postList.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
     @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -71,25 +84,25 @@ public class PostAdapterGrid extends ArrayAdapter<Post> implements Filterable {
     }
 
 
-    // ✅ Thêm bộ lọc tìm kiếm
-    public void filter(String text) {
-        List<Post> filteredList = new ArrayList<>();
-        if (text.isEmpty()) {
-            filteredList.addAll(originalPostList); // Hiển thị tất cả nếu ô tìm kiếm rỗng
-        } else {
-            String searchText = text.toLowerCase();
-            for (Post post : originalPostList) {
-                if (post.getTitle().toLowerCase().contains(searchText) ||
-                        post.getServiceInfo().toLowerCase().contains(searchText) ||
-                        post.getAddress().toLowerCase().contains(searchText)) {
-                    filteredList.add(post);
-                }
-            }
-        }
-        postList.clear();
-        postList.addAll(filteredList);
-        notifyDataSetChanged(); // Cập nhật UI
-    }
+//    // ✅ Thêm bộ lọc tìm kiếm
+//    public void filter(String text) {
+//        List<Post> filteredList = new ArrayList<>();
+//        if (text.isEmpty()) {
+//            filteredList.addAll(originalPostList); // Hiển thị tất cả nếu ô tìm kiếm rỗng
+//        } else {
+//            String searchText = text.toLowerCase();
+//            for (Post post : originalPostList) {
+//                if (post.getTitle().toLowerCase().contains(searchText) ||
+//                        post.getServiceInfo().toLowerCase().contains(searchText) ||
+//                        post.getAddress().toLowerCase().contains(searchText)) {
+//                    filteredList.add(post);
+//                }
+//            }
+//        }
+//        postList.clear();
+//        postList.addAll(filteredList);
+//        notifyDataSetChanged(); // Cập nhật UI
+//    }
     public void updateData(List<Post> newPostList) {
         this.postList.clear();               // Xóa danh sách cũ
         this.postList.addAll(newPostList);   // Thêm dữ liệu mới
