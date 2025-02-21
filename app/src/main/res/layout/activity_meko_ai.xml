@@ -20,55 +20,80 @@
 
             <!-- ✨ Giao tiếp với Gemini API -->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="6dp">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:layout_marginTop="6dp">-->
 
-                <EditText
-                    android:id="@+id/edtUserQuery"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="Hỏi Meko AI..."
-                    android:background="@android:drawable/edit_text"
-                    android:padding="8dp"
-                    android:layout_marginEnd="8dp"/>
+<!--                <EditText-->
+<!--                    android:id="@+id/edtUserQuery"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:hint="Hỏi Meko AI..."-->
+<!--                    android:background="@android:drawable/edit_text"-->
+<!--                    android:padding="8dp"-->
+<!--                    android:layout_marginEnd="8dp"/>-->
 
-                <ImageButton
-                    android:id="@+id/btnSearchAI"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/search_icon"
-                    android:contentDescription="Gửi đánh giá"/>
-            </LinearLayout>
+<!--                <ImageButton-->
+<!--                    android:id="@+id/btnSearchAI"-->
+<!--                    android:layout_width="48dp"-->
+<!--                    android:layout_height="48dp"-->
+<!--                    android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--                    android:scaleType="centerInside"-->
+<!--                    android:src="@drawable/search_icon"-->
+<!--                    android:contentDescription="Gửi đánh giá"/>-->
+<!--            </LinearLayout>-->
             <!-- GridView để hiển thị dữ liệu từ Firebase -->
             <GridView
                 android:id="@+id/gridView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:numColumns="2"
+                android:numColumns="3"
                 android:verticalSpacing="10dp"
                 android:horizontalSpacing="10dp"
                 android:layout_marginTop="8dp"
                 android:stretchMode="columnWidth" />
 
-
-            <TextView
-                android:id="@+id/txtAIResponse"
+            <!-- 💬 RecyclerView hiển thị các tin nhắn -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewChat"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Kết quả AI sẽ hiển thị ở đây"
-                android:padding="12dp"
-                android:background="#FAFAFA"
-                android:textColor="#333333"/>
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:clipToPadding="false"
+                android:scrollbars="vertical" />
         </LinearLayout>
     </ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="6dp">
 
+        <EditText
+            android:id="@+id/edtUserQuery"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Hỏi Meko AI..."
+            android:background="@android:drawable/edit_text"
+            android:padding="8dp"
+            android:layout_marginEnd="8dp"/>
+
+        <ImageButton
+            android:id="@+id/btnSearchAI"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="centerInside"
+            android:src="@drawable/search_icon"
+            android:contentDescription="Gửi đánh giá"/>
+    </LinearLayout>
     <!-- Thanh điều hướng dưới cùng -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
