@@ -12,7 +12,10 @@ public class ChatMessage {
     public String getMessage() {
         return message;
     }
-
+    // ✅ Setter cho message
+    public void setMessage(String message) {
+        this.message = message;
+    }
     public boolean isUser() {
         return isUser;
     }

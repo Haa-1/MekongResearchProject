@@ -11,7 +11,7 @@
         android:layout_height="40dp"
         android:layout_marginEnd="8dp"
         android:src="@drawable/user"
-        android:background="@drawable/bg_avatar"
+        android:background="@drawable/bg_chat_bubble_ai"
         android:scaleType="centerCrop" />
 
     <!-- 💬 Nội dung tin nhắn -->

@@ -2,6 +2,7 @@ package com.example.researchproject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MenuItem;
 import android.widget.*;
 import androidx.annotation.NonNull;
@@ -59,24 +60,23 @@ public class MekoAI extends AppCompatActivity {
         setContentView(R.layout.activity_meko_ai);
 
         // 🎯 Ánh xạ View
-//        txtAIResponse = findViewById(R.id.txtAIResponse);
         btnSearchAI = findViewById(R.id.btnSearchAI);
         edtUserQuery = findViewById(R.id.edtUserQuery);
         gridView = findViewById(R.id.gridView);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         recyclerViewChat = findViewById(R.id.recyclerViewChat);
 
-        // Khởi tạo Markwon để hiển thị Markdown
-        Markwon markwon = Markwon.create(this);
+
+
         chatMessages = new ArrayList<>();
         chatAdapter = new ChatAdapter(this, chatMessages);
         recyclerViewChat.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewChat.setAdapter(chatAdapter);
+
         // ✅ Kết nối Firebase
         databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
         postAdapter = new PostAdapterGrid(this, filteredFirebaseData);
         gridView.setAdapter(postAdapter);
-        btnSearchAI.setOnClickListener(v -> sendUserMessage());
         // 🎯 Bottom Navigation
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
@@ -120,39 +120,29 @@ public class MekoAI extends AppCompatActivity {
 
         // 🎯 Xử lý nút tìm kiếm
         btnSearchAI.setOnClickListener(v -> {
-            String userQuery = edtUserQuery.getText().toString().trim();
-
-            // ✅ Lấy từ khóa trong dấu ngoặc đơn () để tìm Firebase
-            String keyword = extractKeyword(userQuery);
-
-            // 🔥 Gửi nội dung nhập cho Gemini (dù có từ khóa hay không)
-            sendRequestToGemini(userQuery);
-
-            // 🟡 Tìm kiếm trong Firebase nếu có từ khóa trong dấu ngoặc
-            if (!keyword.isEmpty()) {
-                fetchFilteredFirebase(keyword);
-            } else {
-                Toast.makeText(this, "Bạn có thể đặt từ khóa trong dấu ngoặc đơn () để tìm kiếm dễ dàng hơn!", Toast.LENGTH_LONG).show();
-            }
+            sendUserMessage(); // Xử lý gửi câu hỏi
         });
+
     }
 
     // 🎯 Hàm LẤY TỪ KHÓA trong dấu ngoặc đơn ()
-    private String extractKeyword(String input) {
+    private List<String> extractKeywords(String input) {
+        List<String> keywords = new ArrayList<>();
         Pattern pattern = Pattern.compile("\\((.*?)\\)");
         Matcher matcher = pattern.matcher(input);
-        if (matcher.find()) {
-            return matcher.group(1).trim(); // Trả về từ khóa trong dấu ngoặc
+        while (matcher.find()) {
+            keywords.add(matcher.group(1).trim());
         }
-        return ""; // Không tìm thấy từ khóa
+        return keywords;
     }
+
 
     // 🔥 Firebase Query (Chỉ tìm từ khóa trong dấu ngoặc)
     private void fetchFilteredFirebase(String keyword) {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                filteredFirebaseData.clear();
+                filteredFirebaseData.clear(); // Xóa trước khi thêm mới
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Post post = dataSnapshot.getValue(Post.class);
                     if (post != null && containsKeyword(post, keyword)) {
@@ -165,14 +155,14 @@ public class MekoAI extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 runOnUiThread(() -> {
-                    // Thêm tin nhắn lỗi vào danh sách chat
-                    chatMessages.add(new ChatMessage("❌ Hệ thống MekongGo đang gặp lỗi: " + error.getMessage(), false)); // false vì đây là tin nhắn từ hệ thống/AI
-                    chatAdapter.notifyItemInserted(chatMessages.size() - 1); // Cập nhật RecyclerView
-                    recyclerViewChat.scrollToPosition(chatMessages.size() - 1); // Cuộn đến tin nhắn mới
+                    chatMessages.add(new ChatMessage("❌ Hệ thống MekongGo đang bị Lỗi : " + error.getMessage(), false));
+                    chatAdapter.notifyItemInserted(chatMessages.size() - 1);
+                    recyclerViewChat.scrollToPosition(chatMessages.size() - 1);
                 });
             }
         });
     }
+
 
     // 🤖 Gửi yêu cầu đến Gemini API với toàn bộ nội dung nhập
     private void sendRequestToGemini(String userMessage) {
@@ -233,13 +223,8 @@ public class MekoAI extends AppCompatActivity {
                 }
 
                 String finalGeminiResponse = geminiResponse;
-                runOnUiThread(() -> {
-                    chatMessages.add(new ChatMessage(finalGeminiResponse, false)); // Phản hồi từ AI
-                    chatAdapter.notifyItemInserted(chatMessages.size() - 1);
-                    recyclerViewChat.scrollToPosition(chatMessages.size() - 1);
-
-
-                });
+                // ✅ Thêm hiệu ứng "typing" với delay 50ms
+                runOnUiThread(() -> displayTypingEffect(finalGeminiResponse));
             }
         });
     }
@@ -253,9 +238,52 @@ public class MekoAI extends AppCompatActivity {
             edtUserQuery.setText("");
             recyclerViewChat.scrollToPosition(chatMessages.size() - 1);
 
+            // ✅ Xử lý từ khóa trong dấu ngoặc đơn ()
+            List<String> keywords = extractKeywords(userMessage);
+            if (!keywords.isEmpty()) {
+                for (String keyword : keywords) {
+                    fetchFilteredFirebase(keyword); // Tìm kiếm từng từ khóa
+                }
+            } else {
+                Toast.makeText(this, "Bạn có thể đặt từ khóa trong dấu ngoặc đơn () để tìm kiếm dễ dàng hơn!", Toast.LENGTH_LONG).show();
+            }
+
+
+            // ✅ Gửi yêu cầu đến Gemini API
             sendRequestToGemini(userMessage);
         }
     }
+    private void displayTypingEffect(String message) {
+        ChatMessage aiMessage = new ChatMessage("", false); // Khởi tạo tin nhắn rỗng
+        chatMessages.add(aiMessage);
+        int messageIndex = chatMessages.size() - 1;
+        chatAdapter.notifyItemInserted(messageIndex);
+        recyclerViewChat.scrollToPosition(messageIndex);
+
+        Handler handler = new Handler();
+        final int[] index = {0};
+
+        Runnable typingRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (index[0] < message.length()) {
+                    // Thêm từng ký tự vào message
+                    String currentText = chatMessages.get(messageIndex).getMessage();
+                    chatMessages.get(messageIndex).setMessage(currentText + message.charAt(index[0]));
+                    chatAdapter.notifyItemChanged(messageIndex);
+                    recyclerViewChat.scrollToPosition(messageIndex);
+                    index[0]++;
+
+                    // Delay 50ms giữa các ký tự
+                    handler.postDelayed(this, 30);
+                }
+            }
+        };
+
+        // Bắt đầu hiệu ứng typing
+        handler.post(typingRunnable);
+    }
+
     // 🎯 Kiểm tra từ khóa trong tất cả các trường của Post
     private boolean containsKeyword(Post post, String keyword) {
         keyword = keyword.toLowerCase();
