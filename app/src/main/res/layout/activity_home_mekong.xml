@@ -28,6 +28,7 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:background="#9CCFE6"
+        android:padding="8dp"
         android:layout_marginTop="10dp">
         <ImageView
             android:id="@+id/search"
@@ -36,7 +37,6 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/search_icon"
-
             />
     <!-- 🔍 Thanh Tìm Kiếm -->
     <AutoCompleteTextView
@@ -76,14 +76,15 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- 🏠 Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:background="#9CCFE6"
         app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="@null"
-        />
+        app:itemIconTint="@color/bottom_nav_icon_color"
+        app:itemTextColor="@color/bottom_nav_icon_color"/>
+
 
 </LinearLayout>

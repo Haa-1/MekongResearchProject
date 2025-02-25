@@ -1,5 +1,4 @@
 package com.example.researchproject.iam;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -28,35 +27,32 @@ import com.google.firebase.database.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 public class PostDetailActivity extends AppCompatActivity {
-
     private TextView txtTitle, txtServiceInfo, txtPrice, txtRentalTime, txtAddress, txtContact;
     private ImageView imgService;
     private ImageButton btnAddToCart, btnPay, btnSubmitReview;
     private RatingBar ratingBar;
     private EditText edtReview;
+    private TextView txtWelcome;
     private RecyclerView recyclerViewReviews;
     private ReviewAdapter reviewAdapter;
     private List<Review> reviewList;
     private DatabaseReference reviewsRef, cartRef;
     private String postId;
     private BottomNavigationView bottomNavigationView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_detail);
-
         // 🎯 Initialize Views
         txtTitle = findViewById(R.id.txtTitle);
         txtServiceInfo = findViewById(R.id.txtServiceInfo);
         txtPrice = findViewById(R.id.txtPrice);
         txtRentalTime = findViewById(R.id.txtRentalTime);
+        txtWelcome = findViewById(R.id.txtWelcome);
         txtAddress = findViewById(R.id.txtAddress);
         txtContact = findViewById(R.id.txtContact);
         imgService = findViewById(R.id.imgService);
-
         btnAddToCart = findViewById(R.id.btnAddToCart);
         btnPay = findViewById(R.id.btnPay);
         btnSubmitReview = findViewById(R.id.btnSubmitReview);
@@ -64,13 +60,11 @@ public class PostDetailActivity extends AppCompatActivity {
         edtReview = findViewById(R.id.edtReview);
         recyclerViewReviews = findViewById(R.id.recyclerViewReviews);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-
         // 🌟 Setup RecyclerView for Reviews
         reviewList = new ArrayList<>();
         reviewAdapter = new ReviewAdapter(this, reviewList);
         recyclerViewReviews.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewReviews.setAdapter(reviewAdapter);
-
         // ✅ Set Active Tab in Bottom Navigation
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -98,10 +92,8 @@ public class PostDetailActivity extends AppCompatActivity {
             finish();
             return;
         }
-
         reviewsRef = FirebaseDatabase.getInstance().getReference("Reviews").child(postId);
         cartRef = FirebaseDatabase.getInstance().getReference("Cart");
-
         // 📌 Get Data from Intent
         String title = getIntent().getStringExtra("title");
         String serviceInfo = getIntent().getStringExtra("serviceInfo");
@@ -110,7 +102,6 @@ public class PostDetailActivity extends AppCompatActivity {
         String address = getIntent().getStringExtra("address");
         String contact = getIntent().getStringExtra("contact");
         String imageUrl = getIntent().getStringExtra("imageUrl");
-
         // ✅ Display Data
         txtTitle.setText(title);
         txtServiceInfo.setText(serviceInfo);
@@ -119,7 +110,6 @@ public class PostDetailActivity extends AppCompatActivity {
         txtAddress.setText("Địa chỉ: " + address);
         txtContact.setText("Liên hệ: " + contact);
         Glide.with(this).load(imageUrl).into(imgService);
-
         // ✅ Add to Cart
         btnAddToCart.setOnClickListener(v -> {
             String cartItemId = cartRef.push().getKey();
@@ -129,7 +119,6 @@ public class PostDetailActivity extends AppCompatActivity {
                 cartItem.put("title", title);
                 cartItem.put("price", price);
                 cartItem.put("imageUrl", imageUrl);
-
                 cartRef.child(cartItemId).setValue(cartItem)
                         .addOnSuccessListener(aVoid ->
                                 Toast.makeText(PostDetailActivity.this, "Đã thêm vào giỏ hàng!", Toast.LENGTH_SHORT).show()
@@ -139,12 +128,10 @@ public class PostDetailActivity extends AppCompatActivity {
                         );
             }
         });
-
         // ✅ Payment Button
         btnPay.setOnClickListener(v ->
                 Toast.makeText(this, "Chức năng thanh toán đang phát triển.", Toast.LENGTH_SHORT).show()
         );
-
         // ✅ Submit Review
         btnSubmitReview.setOnClickListener(v -> {
             String reviewText = edtReview.getText().toString().trim();
@@ -154,7 +141,6 @@ public class PostDetailActivity extends AppCompatActivity {
                 Toast.makeText(this, "Vui lòng nhập đánh giá & chọn số sao!", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             // 🔥 Save Review to Firebase
             String reviewId = reviewsRef.push().getKey();
             if (reviewId != null) {
@@ -162,7 +148,6 @@ public class PostDetailActivity extends AppCompatActivity {
                 reviewMap.put("user", "Người dùng ẩn danh");
                 reviewMap.put("rating", rating);
                 reviewMap.put("comment", reviewText);
-
                 reviewsRef.child(reviewId).setValue(reviewMap)
                         .addOnSuccessListener(aVoid -> {
                             Toast.makeText(this, "Đánh giá đã gửi!", Toast.LENGTH_SHORT).show();
@@ -174,11 +159,9 @@ public class PostDetailActivity extends AppCompatActivity {
                         );
             }
         });
-
         // ✅ Load Reviews
         loadReviews();
     }
-
     private void loadReviews() {
         reviewsRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -190,7 +173,6 @@ public class PostDetailActivity extends AppCompatActivity {
                 }
                 reviewAdapter.notifyDataSetChanged();
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(PostDetailActivity.this, "Lỗi tải đánh giá!", Toast.LENGTH_SHORT).show();

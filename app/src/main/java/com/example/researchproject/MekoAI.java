@@ -1,12 +1,13 @@
 package com.example.researchproject;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,13 +34,12 @@ import java.util.regex.Pattern;
 
 import io.noties.markwon.Markwon;
 import okhttp3.*;
-
 public class MekoAI extends AppCompatActivity {
     private RecyclerView recyclerViewChat;
-
+    private NestedScrollView nestedScrollView;
+    private TextView txtSuggestion;
     private ChatAdapter chatAdapter;
     private List<ChatMessage> chatMessages;
-//    private TextView txtAIResponse;
     private ImageButton btnSearchAI;
     private EditText edtUserQuery;
     private DatabaseReference databaseReference;
@@ -47,32 +47,30 @@ public class MekoAI extends AppCompatActivity {
     private PostAdapterGrid postAdapter;
     private List<Post> filteredFirebaseData = new ArrayList<>();
     private String geminiResponse = "";
-
     // Gemini API
     private final String API_KEY = "AIzaSyDpowdMhSBVL9qKWQ_eVrsi7FKbb4_Y3yE";
     private final String API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + API_KEY;
-
     BottomNavigationView bottomNavigationView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meko_ai);
-
         // 🎯 Ánh xạ View
         btnSearchAI = findViewById(R.id.btnSearchAI);
         edtUserQuery = findViewById(R.id.edtUserQuery);
         gridView = findViewById(R.id.gridView);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         recyclerViewChat = findViewById(R.id.recyclerViewChat);
-
-
-
+        txtSuggestion = findViewById(R.id.txtSuggestion);
         chatMessages = new ArrayList<>();
         chatAdapter = new ChatAdapter(this, chatMessages);
+        recyclerViewChat.scrollToPosition(chatMessages.size() - 1);
+        nestedScrollView = findViewById(R.id.nestedScrollView);
+        txtSuggestion = findViewById(R.id.txtSuggestion);
+        recyclerViewChat.setNestedScrollingEnabled(false);
+        gridView.setNestedScrollingEnabled(false);
         recyclerViewChat.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewChat.setAdapter(chatAdapter);
-
         // ✅ Kết nối Firebase
         databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
         postAdapter = new PostAdapterGrid(this, filteredFirebaseData);
@@ -81,7 +79,6 @@ public class MekoAI extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             Intent intent = null;
-
             if (itemId == R.id.nav_home) {
                 intent = new Intent(MekoAI.this, HomeMekong.class);
             } else if (itemId == R.id.nav_ai) {
@@ -93,18 +90,15 @@ public class MekoAI extends AppCompatActivity {
             } else if (itemId == R.id.nav_info) {
                 intent = new Intent(MekoAI.this, InformationActivity.class);
             }
-
             if (intent != null) {
                 startActivity(intent);
                 return true;
             }
             return false;
         });
-
         // 🎯 Xử lý nhấn vào từng item trong GridView
         gridView.setOnItemClickListener((parent, view, position, id) -> {
             Post selectedPost = filteredFirebaseData.get(position);
-
             Intent intent = new Intent(MekoAI.this, PostDetailActivity.class);
             intent.putExtra("postId", selectedPost.getPostId());
             intent.putExtra("title", selectedPost.getTitle());
@@ -114,17 +108,13 @@ public class MekoAI extends AppCompatActivity {
             intent.putExtra("address", selectedPost.getAddress());
             intent.putExtra("contact", selectedPost.getContact());
             intent.putExtra("imageUrl", selectedPost.getImageUrl());
-
             startActivity(intent);
         });
-
         // 🎯 Xử lý nút tìm kiếm
         btnSearchAI.setOnClickListener(v -> {
             sendUserMessage(); // Xử lý gửi câu hỏi
         });
-
     }
-
     // 🎯 Hàm LẤY TỪ KHÓA trong dấu ngoặc đơn ()
     private List<String> extractKeywords(String input) {
         List<String> keywords = new ArrayList<>();
@@ -135,8 +125,6 @@ public class MekoAI extends AppCompatActivity {
         }
         return keywords;
     }
-
-
     // 🔥 Firebase Query (Chỉ tìm từ khóa trong dấu ngoặc)
     private void fetchFilteredFirebase(String keyword) {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -151,7 +139,6 @@ public class MekoAI extends AppCompatActivity {
                 }
                 postAdapter.notifyDataSetChanged();
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 runOnUiThread(() -> {
@@ -162,37 +149,30 @@ public class MekoAI extends AppCompatActivity {
             }
         });
     }
-
-
     // 🤖 Gửi yêu cầu đến Gemini API với toàn bộ nội dung nhập
     private void sendRequestToGemini(String userMessage) {
         OkHttpClient client = new OkHttpClient();
         MediaType JSON = MediaType.get("application/json; charset=utf-8");
-
         JSONObject requestBody = new JSONObject();
         try {
             JSONArray partsArray = new JSONArray();
             JSONObject textObject = new JSONObject();
             textObject.put("text", userMessage);
             partsArray.put(textObject);
-
             JSONObject userContent = new JSONObject();
             userContent.put("role", "user");
             userContent.put("parts", partsArray);
-
             JSONArray contentsArray = new JSONArray();
             contentsArray.put(userContent);
             requestBody.put("contents", contentsArray);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         RequestBody body = RequestBody.create(requestBody.toString(), JSON);
         Request request = new Request.Builder()
                 .url(API_URL)
                 .post(body)
                 .build();
-
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -201,7 +181,6 @@ public class MekoAI extends AppCompatActivity {
                     chatAdapter.notifyItemInserted(chatMessages.size() - 1);
                 });
             }
-
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String geminiResponse = "";
@@ -228,8 +207,6 @@ public class MekoAI extends AppCompatActivity {
             }
         });
     }
-
-
     private void sendUserMessage() {
         String userMessage = edtUserQuery.getText().toString().trim();
         if (!userMessage.isEmpty()) {
@@ -247,43 +224,37 @@ public class MekoAI extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Bạn có thể đặt từ khóa trong dấu ngoặc đơn () để tìm kiếm dễ dàng hơn!", Toast.LENGTH_LONG).show();
             }
-
-
             // ✅ Gửi yêu cầu đến Gemini API
             sendRequestToGemini(userMessage);
         }
     }
     private void displayTypingEffect(String message) {
-        ChatMessage aiMessage = new ChatMessage("", false); // Khởi tạo tin nhắn rỗng
+        ChatMessage aiMessage = new ChatMessage("", false); // Tin nhắn rỗng cho AI
         chatMessages.add(aiMessage);
         int messageIndex = chatMessages.size() - 1;
         chatAdapter.notifyItemInserted(messageIndex);
-        recyclerViewChat.scrollToPosition(messageIndex);
-
         Handler handler = new Handler();
         final int[] index = {0};
-
         Runnable typingRunnable = new Runnable() {
             @Override
             public void run() {
                 if (index[0] < message.length()) {
-                    // Thêm từng ký tự vào message
                     String currentText = chatMessages.get(messageIndex).getMessage();
                     chatMessages.get(messageIndex).setMessage(currentText + message.charAt(index[0]));
                     chatAdapter.notifyItemChanged(messageIndex);
-                    recyclerViewChat.scrollToPosition(messageIndex);
+                    // ✅ Tự động cuộn xuống khi typing
+                    nestedScrollView.post(() -> nestedScrollView.fullScroll(View.FOCUS_DOWN));
                     index[0]++;
-
-                    // Delay 50ms giữa các ký tự
-                    handler.postDelayed(this, 30);
+                    handler.postDelayed(this, 30); // Điều chỉnh tốc độ typing
+                } else {
+                    // ✅ Hiển thị GridView sau khi phản hồi xong
+                    showSuggestions();
                 }
             }
         };
 
-        // Bắt đầu hiệu ứng typing
         handler.post(typingRunnable);
     }
-
     // 🎯 Kiểm tra từ khóa trong tất cả các trường của Post
     private boolean containsKeyword(Post post, String keyword) {
         keyword = keyword.toLowerCase();
@@ -293,5 +264,13 @@ public class MekoAI extends AppCompatActivity {
                 (post.getRentalTime() != null && post.getRentalTime().toLowerCase().contains(keyword)) ||
                 (post.getAddress() != null && post.getAddress().toLowerCase().contains(keyword)) ||
                 (post.getContact() != null && post.getContact().toLowerCase().contains(keyword));
+    }
+    private void showSuggestions() {
+        txtSuggestion.setVisibility(View.VISIBLE);  // ✅ Hiển thị dòng chữ "Gợi ý cho bạn"
+        gridView.setVisibility(View.VISIBLE);       // ✅ Hiển thị GridView
+        // Nếu bạn cần cập nhật dữ liệu vào GridView
+        postAdapter.notifyDataSetChanged();
+        // ✅ Cuộn xuống để hiển thị GridView hoàn toàn
+        nestedScrollView.post(() -> nestedScrollView.fullScroll(View.FOCUS_DOWN));
     }
 }

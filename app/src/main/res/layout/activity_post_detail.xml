@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="2dp">
-
     <!-- 🔹 ScrollView for content -->
     <ScrollView
         android:layout_width="match_parent"
@@ -17,14 +16,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
            >
-
             <!-- 🖼 Image -->
             <ImageView
                 android:id="@+id/imgService"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:scaleType="centerCrop"
-
                 />
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,7 +38,6 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_marginTop="10dp"/>
-
             <!-- 📌 Service Info -->
             <TextView
                 android:id="@+id/txtServiceInfo"
@@ -76,6 +72,7 @@
                 android:textColor="#1569AB"
                 android:text="Liên hệ: --"
                 android:layout_marginTop="6dp"/>
+
         </LinearLayout>
             <!-- 🛒 Buttons -->
             <LinearLayout
@@ -217,13 +214,14 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- ✅ Bottom Navigation -->
+    <!-- 🏠 Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:background="#9CCFE6"
         app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="@null"
-        />
+        app:itemIconTint="@color/bottom_nav_icon_color"
+        app:itemTextColor="@color/bottom_nav_icon_color"/>
 </LinearLayout>

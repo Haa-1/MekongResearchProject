@@ -18,7 +18,6 @@ import com.example.researchproject.iam.LoginActivity;
 import com.example.researchproject.ui.PostActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-
 public class InformationActivity extends AppCompatActivity {
     TextView tv_profile;
     private ActivityInformationBinding binding;
@@ -26,7 +25,6 @@ public class InformationActivity extends AppCompatActivity {
     private Button  btnLogout;
     BottomNavigationView bottomNavigationView;
     private TextView txtWelcome;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,13 +39,11 @@ public class InformationActivity extends AppCompatActivity {
         txtWelcome.setText("Email:  " + userEmail );
         btnLogout = findViewById(R.id.btnLogout);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-
         // Xử lý sự kiện khi chọn item trong menu
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int itemId = item.getItemId();
-
                 if (itemId == R.id.nav_home) {
                     startActivity(new Intent(InformationActivity.this, HomeMekong.class));
                 } else if (itemId == R.id.nav_ai) {
@@ -61,7 +57,6 @@ public class InformationActivity extends AppCompatActivity {
                 } else {
                     return false;
                 }
-
                 return true;
             }
         });
@@ -71,6 +66,5 @@ public class InformationActivity extends AppCompatActivity {
             startActivity(new Intent(InformationActivity.this, LoginActivity.class));
             finish();
         });
-
     }
 }
