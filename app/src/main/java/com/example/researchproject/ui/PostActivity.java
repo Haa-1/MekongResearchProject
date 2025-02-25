@@ -1,6 +1,4 @@
 package com.example.researchproject.ui;
-
-
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -16,36 +14,31 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import com.bumptech.glide.Glide;
 import com.example.researchproject.HomeMekong;
 import com.example.researchproject.InformationActivity;
 import com.example.researchproject.MekoAI;
 import com.example.researchproject.R;
 import com.example.researchproject.iam.CartActivity;
+import com.example.researchproject.iam.PostAdActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
 import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Objects;
-
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -56,7 +49,6 @@ import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -71,7 +63,7 @@ public class PostActivity extends AppCompatActivity {
     private Button  btnPost;
     private ImageView imgService;
     private Uri imageUri;
-    private Button btnUploadImage;
+    private Button btnUploadImage,btnPostAd;
     private TextView txtImageUrl;
     private DatabaseReference databaseReference;
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -94,7 +86,12 @@ public class PostActivity extends AppCompatActivity {
         imgService = findViewById(R.id.imgService);
         btnUploadImage = findViewById(R.id.btnUploadImage);
         txtImageUrl = findViewById(R.id.txtImageUrl);
+        Button btnPostAd = findViewById(R.id.btnPostAd);
 
+        btnPostAd.setOnClickListener(v -> {
+            Intent intent = new Intent(PostActivity.this, PostAdActivity.class);
+            startActivity(intent);
+        });
         btnUploadImage.setOnClickListener(v -> openFileChooser());
         btnUploadImage.setOnClickListener(v -> checkStoragePermission());
 
@@ -135,20 +132,15 @@ public class PostActivity extends AppCompatActivity {
                 openFileChooser();
             }
         });
-
         // Xử lý đăng bài
         btnPost.setOnClickListener(v -> uploadPost());
     }
-
-
-
     private void openFileChooser() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*"); // Lọc chỉ chọn file ảnh
         intent.addCategory(Intent.CATEGORY_OPENABLE); // Chỉ hiện các file có thể mở được
         startActivityForResult(Intent.createChooser(intent, "Chọn hình ảnh"), PICK_IMAGE_REQUEST);
     }
-
     // Xử lý kết quả sau khi chọn ảnh
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -159,13 +151,10 @@ public class PostActivity extends AppCompatActivity {
             Glide.with(this).load(imageUri).into(imgService); // Hiển thị ảnh đã chọn
         }
     }
-
-
     // Xử lý khi người dùng cấp quyền truy cập bộ nhớ
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         if (requestCode == REQUEST_STORAGE_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openFileChooser();
@@ -174,7 +163,6 @@ public class PostActivity extends AppCompatActivity {
             }
         }
     }
-
     private void checkStoragePermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -197,11 +185,9 @@ public class PostActivity extends AppCompatActivity {
             Toast.makeText(this, "Vui lòng điền đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
             return;
         }
-
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Đang đăng tin...");
         progressDialog.show();
-
         if (imageUri != null) {
             uploadImageToImgur(imageUri, (imageUrl) -> {
                 txtImageUrl.setText(imageUrl); // Cập nhật URL ảnh vào TextView
@@ -229,7 +215,6 @@ public class PostActivity extends AppCompatActivity {
         finish();
 
     }
-
     // Upload ảnh lên Imgur
     private void uploadImageToImgur(Uri imageUri, OnUploadSuccessListener successListener, OnUploadFailureListener failureListener) {
         try {
@@ -237,28 +222,22 @@ public class PostActivity extends AppCompatActivity {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
             int bytesRead;
-
             while ((bytesRead = Objects.requireNonNull(inputStream).read(buffer)) != -1) {
                 baos.write(buffer, 0, bytesRead);
             }
-
             byte[] imageBytes = baos.toByteArray();
             String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-
             OkHttpClient client = new OkHttpClient();
-
             // ✅ Đúng định dạng multipart/form-data cho API Imgur
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
                     .addFormDataPart("image", encodedImage)
                     .build();
-
             Request request = new Request.Builder()
                     .url("https://api.imgur.com/3/image")
                     .addHeader("Authorization", "Client-ID " + IMGUR_CLIENT_ID)
                     .post(requestBody)
                     .build();
-
             new Thread(() -> {
                 try {
                     Response response = client.newCall(request).execute();
@@ -266,7 +245,6 @@ public class PostActivity extends AppCompatActivity {
                         String responseData = Objects.requireNonNull(response.body()).string();
                         JSONObject jsonObject = new JSONObject(responseData);
                         String imageUrl = jsonObject.getJSONObject("data").getString("link");
-
                         Log.d("ImgurUpload", "Ảnh tải lên thành công: " + imageUrl);
                         runOnUiThread(() -> successListener.onSuccess(imageUrl));
                     } else {
@@ -278,18 +256,15 @@ public class PostActivity extends AppCompatActivity {
                     runOnUiThread(() -> failureListener.onFailure(e.getMessage()));
                 }
             }).start();
-
         } catch (Exception e) {
             Log.e("ImgurUpload", "Lỗi đọc file ảnh: " + e.getMessage());
             failureListener.onFailure(e.getMessage());
         }
     }
-
     // Lưu thông tin bài đăng vào Firebase
     private void savePostToDatabase(String title, String serviceInfo, String price, String rentalTime, String address, String contact, String imageUrl) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
         String postId = databaseReference.push().getKey(); // ✅ Tạo ID duy nhất cho bài đăng
-
         if (postId != null) {
             HashMap<String, Object> postMap = new HashMap<>();
             postMap.put("title", title);
@@ -300,21 +275,16 @@ public class PostActivity extends AppCompatActivity {
             postMap.put("address", address);
             postMap.put("contact", contact);
             postMap.put("imageUrl", imageUrl); // ✅ Đảm bảo thêm imageUrl vào đây
-
             Log.d("FirebaseSave", "Dữ liệu đang lưu: " + postMap.toString()); // Log dữ liệu trước khi lưu
-
             databaseReference.child(postId).setValue(postMap)
                     .addOnSuccessListener(aVoid -> Log.d("FirebaseSave", "Đăng bài thành công!"))
                     .addOnFailureListener(e -> Log.e("FirebaseSave", "Lỗi khi đăng bài: " + e.getMessage()));
         }
     }
-
-
     // Interfaces để xử lý callback khi upload ảnh
     interface OnUploadSuccessListener {
         void onSuccess(String imageUrl);
     }
-
     interface OnUploadFailureListener {
         void onFailure(String errorMessage);
     }

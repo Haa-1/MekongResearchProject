@@ -17,17 +17,38 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
-            <!-- Tiêu đề chính -->
-            <TextView
-                android:id="@+id/txtTitleHeader"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="ĐĂNG TIN"
-                android:textColor="#1569AB"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:layout_marginBottom="16dp" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="8dp"
+                android:layout_marginBottom="16dp">
+
+                <!-- 📝 Tiêu đề chính -->
+                <TextView
+                    android:id="@+id/txtTitleHeader"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="ĐĂNG TIN"
+                    android:textColor="#1569AB"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:gravity="start"/>
+
+                <!-- 📢 Nút Đăng Quảng Cáo -->
+                <Button
+                    android:id="@+id/btnPostAd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Đăng Quảng Cáo"
+                    android:textSize="24sp"
+                    android:textColor="#1569AB"
+                    android:background="#FFFFFF"
+                    android:layout_marginStart="12dp"/>
+            </LinearLayout>
+
 
             <!-- Tiêu đề bài đăng -->
             <EditText
