@@ -17,6 +17,9 @@
         android:theme="@style/Theme.ResearchProject"
         tools:targetApi="31">
         <activity
+            android:name=".iam.PostAdActivity"
+            android:exported="false" />
+        <activity
             android:name=".MekoAI"
             android:exported="false" />
         <activity

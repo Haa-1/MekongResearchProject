@@ -97,5 +97,5 @@ dependencies {
     implementation 'io.noties.markwon:image:4.6.2'
     implementation 'io.noties.markwon:image-glide:4.6.2'  // Nếu dùng Glide để load ảnh
     implementation 'io.noties.markwon:linkify:4.6.2'     // ✅ Linkify hỗ trợ URL
-
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
 }

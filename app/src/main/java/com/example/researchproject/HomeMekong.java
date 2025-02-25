@@ -1,6 +1,7 @@
 package com.example.researchproject;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,7 +17,10 @@ import android.widget.SearchView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.researchproject.iam.Ad;
+import com.example.researchproject.iam.AdSliderAdapter;
 import com.example.researchproject.iam.CartActivity;
 import com.example.researchproject.iam.LoginActivity;
 import com.example.researchproject.iam.Post;
@@ -24,6 +28,8 @@ import com.example.researchproject.iam.PostAdapterGrid;
 import com.example.researchproject.iam.PostDetailActivity;
 import com.example.researchproject.ui.PostActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -60,6 +66,11 @@ public class HomeMekong extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private TextView txtWelcome;
     private BottomNavigationView bottomNavigationView;
+    private ViewPager2 viewPagerAds;
+    private AdSliderAdapter adSliderAdapter;
+    private List<Ad> adList;
+    private DatabaseReference adsRef;
+    private TabLayout tabDots;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +84,26 @@ public class HomeMekong extends AppCompatActivity {
         searchView = findViewById(R.id.searchView);
         txtWelcome = findViewById(R.id.txtWelcome);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
+        viewPagerAds = findViewById(R.id.viewPagerAds);
+        tabDots = findViewById(R.id.tabDots);
+        adList = new ArrayList<>(); // ✅ Khởi tạo List để tránh null
+        if (!adList.isEmpty()) {
+            new TabLayoutMediator(tabDots, viewPagerAds, (tab, position) -> {}).attach();
+        }
+        adList = new ArrayList<>();
+        adSliderAdapter = new AdSliderAdapter(this, adList);
+        viewPagerAds.setAdapter(adSliderAdapter);
+
+        // Kết nối Firebase
+        adsRef = FirebaseDatabase.getInstance().getReference("Ads");
+        loadAds();
+
+        // Tạo hiệu ứng Slide Tự Động
+        autoSlideAds();
+
+        // Kết nối TabLayout với ViewPager2
+        new TabLayoutMediator(tabDots, viewPagerAds,
+                (tab, position) -> {}).attach();
         String userEmail = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getEmail() : "User";
         txtWelcome.setText("Chào mừng, " + userEmail + "!");
         // Firebase Reference
@@ -173,5 +204,54 @@ public class HomeMekong extends AppCompatActivity {
         if (filteredList.isEmpty()) {
             Toast.makeText(this, "Không tìm thấy kết quả!", Toast.LENGTH_SHORT).show();
         }
+    }
+    // ✅ Load Quảng Cáo Từ Firebase
+    private void loadAds() {
+        adsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (adList == null) {
+                    adList = new ArrayList<>();
+                }
+                adList.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Ad ad = dataSnapshot.getValue(Ad.class);
+                    if (ad != null) {
+                        adList.add(ad);
+                    }
+                }
+                adSliderAdapter.notifyDataSetChanged();
+
+                // ✅ Chỉ kết nối TabLayout nếu có quảng cáo
+                if (!adList.isEmpty()) {
+                    new TabLayoutMediator(tabDots, viewPagerAds, (tab, position) -> {}).attach();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(HomeMekong.this, "Lỗi tải quảng cáo!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    // ✅ Tạo Slide Tự Động Chạy
+    private void autoSlideAds() {
+        final Handler handler = new Handler();
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                int currentItem = viewPagerAds.getCurrentItem();
+                int totalItems = adSliderAdapter.getItemCount();
+                if (currentItem < totalItems - 1) {
+                    viewPagerAds.setCurrentItem(currentItem + 1);
+                } else {
+                    viewPagerAds.setCurrentItem(0);
+                }
+                handler.postDelayed(this, 4000); // 4 giây chuyển slide
+            }
+        };
+        handler.postDelayed(runnable, 4000);
     }
 }
