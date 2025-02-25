@@ -1,10 +1,11 @@
 package com.example.researchproject.iam;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,17 +43,26 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
         // Xóa sản phẩm khỏi giỏ hàng
         holder.btnDelete.setOnClickListener(v -> {
+            String postId = post.getPostId();
+            Log.d("CartAdapter", "Deleting Post ID: " + postId);
+
+            if (postId == null || postId.isEmpty()) {
+                Toast.makeText(context, "Không tìm thấy Post ID!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             DatabaseReference cartRef = FirebaseDatabase.getInstance().getReference("Cart");
-            cartRef.child(post.getPostId()).removeValue()
+            cartRef.child(postId).removeValue()
                     .addOnSuccessListener(aVoid -> {
                         cartList.remove(position);
                         notifyItemRemoved(position);
                         Toast.makeText(context, "Đã xóa khỏi giỏ hàng!", Toast.LENGTH_SHORT).show();
                     })
                     .addOnFailureListener(e -> {
-                        Toast.makeText(context, "Lỗi khi xóa!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Lỗi khi xóa khỏi Firebase!", Toast.LENGTH_SHORT).show();
                     });
         });
+
 
         // Xử lý thanh toán
         holder.btnPay.setOnClickListener(v -> {
@@ -68,7 +78,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     public static class CartViewHolder extends RecyclerView.ViewHolder {
         TextView txtTitle, txtPrice;
         ImageView imgService;
-        Button btnDelete, btnPay;
+        ImageButton btnDelete, btnPay;
 
         public CartViewHolder(@NonNull View itemView) {
             super(itemView);

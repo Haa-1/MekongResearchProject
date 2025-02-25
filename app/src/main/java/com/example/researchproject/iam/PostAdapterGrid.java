@@ -84,29 +84,12 @@ public class PostAdapterGrid extends ArrayAdapter<Post> implements Filterable {
     }
 
 
-//    // ✅ Thêm bộ lọc tìm kiếm
-//    public void filter(String text) {
-//        List<Post> filteredList = new ArrayList<>();
-//        if (text.isEmpty()) {
-//            filteredList.addAll(originalPostList); // Hiển thị tất cả nếu ô tìm kiếm rỗng
-//        } else {
-//            String searchText = text.toLowerCase();
-//            for (Post post : originalPostList) {
-//                if (post.getTitle().toLowerCase().contains(searchText) ||
-//                        post.getServiceInfo().toLowerCase().contains(searchText) ||
-//                        post.getAddress().toLowerCase().contains(searchText)) {
-//                    filteredList.add(post);
-//                }
-//            }
-//        }
-//        postList.clear();
-//        postList.addAll(filteredList);
-//        notifyDataSetChanged(); // Cập nhật UI
-//    }
-    public void updateData(List<Post> newPostList) {
-        this.postList.clear();               // Xóa danh sách cũ
-        this.postList.addAll(newPostList);   // Thêm dữ liệu mới
-        notifyDataSetChanged();              // Cập nhật lại Adapter
+
+    // ✅ Hàm cập nhật dữ liệu sau khi tìm kiếm
+    public void updateData(List<Post> filteredList) {
+        postList.clear();
+        postList.addAll(filteredList);
+        notifyDataSetChanged();
     }
 
 

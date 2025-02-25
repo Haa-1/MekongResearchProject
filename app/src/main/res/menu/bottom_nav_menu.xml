@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    >
     <item
         android:id="@+id/nav_home"
-        android:icon="@drawable/home"
+        android:icon="@drawable/ic_home"
         android:title="Trang chủ" />
 
     <item
@@ -12,16 +12,16 @@
 
     <item
         android:id="@+id/nav_post"
-        android:icon="@drawable/search_icon"
+        android:icon="@drawable/ic_post"
         android:title="Đăng tin" />
 
     <item
         android:id="@+id/nav_cart"
-        android:icon="@drawable/search_icon"
+        android:icon="@drawable/ic_cart"
         android:title="Giỏ hàng" />
 
     <item
         android:id="@+id/nav_info"
-        android:icon="@drawable/profile"
+        android:icon="@drawable/ic_infor"
         android:title="Thông tin" />
 </menu>

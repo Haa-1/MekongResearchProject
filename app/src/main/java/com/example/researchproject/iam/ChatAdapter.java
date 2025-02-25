@@ -14,7 +14,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import io.noties.markwon.Markwon;
+import io.noties.markwon.image.ImagesPlugin;
+import io.noties.markwon.image.glide.GlideImagesPlugin;
+import io.noties.markwon.linkify.LinkifyPlugin;
 
+import com.bumptech.glide.Glide;
 import com.example.researchproject.R;
 
 import java.util.List;
@@ -29,7 +33,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         this.context = context;
         this.chatMessages = chatMessages;
         // ✅ Khởi tạo Markwon
-        this.markwon = Markwon.create(context);
+
+        // ✅ Cấu hình Markwon hỗ trợ ảnh và URL
+        this.markwon = Markwon.builder(context)
+                .usePlugin(ImagesPlugin.create())
+                .usePlugin(GlideImagesPlugin.create(Glide.with(context))) // Glide để tải ảnh
+                .usePlugin(LinkifyPlugin.create()) // Tự động nhận diện URL
+                .build();
     }
 
     @NonNull
@@ -54,27 +64,20 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         // 🎨 Tạo Spannable để làm nổi bật từ khóa và emoji
         SpannableString spannable = new SpannableString(holder.txtMessage.getText());
 
-        // ✅ Tô màu từ khóa "Meko AI"
-        String keyword = "Meko AI";
-        int start = spannable.toString().indexOf(keyword);
-        while (start >= 0) {
-            spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#FF5722")),
-                    start, start + keyword.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            spannable.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
-                    start, start + keyword.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            start = spannable.toString().indexOf(keyword, start + 1);
-        }
+        // 🎉 List emoji hoặc từ khóa cần làm nổi bật
+        String[] highlights = {"Meko AI", "😊", "🎉", "🚀", "🔥", "💡"};
 
-        // 😄 Tô màu các emoji
-        String[] emojis = {"😊", "🎉", "🚀", "🔥", "💡", "💖", "😎", "✨"};
-        for (String emoji : emojis) {
-            int emojiStart = spannable.toString().indexOf(emoji);
-            while (emojiStart >= 0) {
-                spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#FFD700")), // Màu vàng
-                        emojiStart, emojiStart + emoji.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                emojiStart = spannable.toString().indexOf(emoji, emojiStart + 1);
+        for (String highlight : highlights) {
+            int index = message.getMessage().indexOf(highlight);
+            while (index >= 0) {
+                if (highlight.length() > 0) { // ✅ Kiểm tra độ dài
+                    spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#FFD700")),
+                            index, index + highlight.length(), SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+                index = message.getMessage().indexOf(highlight, index + 1); // Tìm các vị trí tiếp theo
             }
         }
+
 
         // 👉 Gán lại sau khi chỉnh định dạng
         holder.txtMessage.setText(spannable);

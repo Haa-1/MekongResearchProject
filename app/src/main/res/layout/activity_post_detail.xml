@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/background_image"
     android:padding="2dp">
 
     <!-- 🔹 ScrollView for content -->
@@ -17,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp">
+           >
 
             <!-- 🖼 Image -->
             <ImageView
@@ -25,15 +24,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:scaleType="centerCrop"
-                android:background="@android:color/darker_gray"
-                />
 
+                />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
             <!-- 📌 Title -->
             <TextView
                 android:id="@+id/txtTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Tiêu đề bài đăng"
+                android:textColor="#1569AB"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_marginTop="10dp"/>
@@ -69,9 +73,10 @@
                 android:id="@+id/txtContact"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#1569AB"
                 android:text="Liên hệ: --"
                 android:layout_marginTop="6dp"/>
-
+        </LinearLayout>
             <!-- 🛒 Buttons -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -119,7 +124,7 @@
                         android:layout_height="30dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:scaleType="centerInside"
-                        android:src="@drawable/search_icon"
+                        android:src="@drawable/ic_pay"
                         android:contentDescription="Thanh toán"/>
 
                     <TextView
@@ -146,6 +151,7 @@
                     android:layout_height="wrap_content"
                     android:text="Đánh giá dịch vụ:"
                     android:textSize="12sp"
+                    android:textColor="#1569AB"
                     android:textStyle="bold"
                     android:layout_marginEnd="8dp"/>
 
@@ -176,6 +182,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="Nhập đánh giá..."
+                    android:textColor="#1569AB"
                     android:background="@android:drawable/edit_text"
                     android:padding="8dp"
                     android:layout_marginEnd="8dp"/>
@@ -196,6 +203,7 @@
                 android:layout_height="wrap_content"
                 android:text="Danh sách đánh giá"
                 android:textSize="12sp"
+                android:textColor="#1569AB"
                 android:textStyle="bold"
                 android:layout_marginTop="12dp"/>
             <androidx.recyclerview.widget.RecyclerView
@@ -215,5 +223,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        app:menu="@menu/bottom_nav_menu"/>
+        app:menu="@menu/bottom_nav_menu"
+        app:itemIconTint="@null"
+        />
 </LinearLayout>

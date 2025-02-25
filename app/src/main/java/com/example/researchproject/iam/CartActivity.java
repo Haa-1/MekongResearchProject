@@ -85,7 +85,6 @@ public class CartActivity extends AppCompatActivity {
                 }
                 cartAdapter.notifyDataSetChanged();
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(CartActivity.this, "Lỗi tải dữ liệu giỏ hàng!", Toast.LENGTH_SHORT).show();

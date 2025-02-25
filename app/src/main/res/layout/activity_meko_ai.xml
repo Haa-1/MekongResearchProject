@@ -1,16 +1,28 @@
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <!-- ScrollView để chứa nội dung có thể cuộn -->
-    <ScrollView
-        android:id="@+id/scrollView2"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#65C5C7C7"
+   >
+    <TextView
+        android:id="@+id/txtTitleHeader"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"> <!-- Quan trọng: giúp nội dung không bị bó hẹp -->
-
+        android:layout_height="50dp"
+        android:text="MEKO AI"
+        android:textColor="#F6F7F8"
+        android:background="#9CCFE6"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="5dp" />
+    <!-- 📝 Sử dụng NestedScrollView để cuộn toàn bộ nội dung -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,33 +31,15 @@
             android:padding="16dp">
 
             <!-- ✨ Giao tiếp với Gemini API -->
-
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:orientation="horizontal"-->
-<!--                android:gravity="center_vertical"-->
-<!--                android:layout_marginTop="6dp">-->
-
-<!--                <EditText-->
-<!--                    android:id="@+id/edtUserQuery"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:hint="Hỏi Meko AI..."-->
-<!--                    android:background="@android:drawable/edit_text"-->
-<!--                    android:padding="8dp"-->
-<!--                    android:layout_marginEnd="8dp"/>-->
-
-<!--                <ImageButton-->
-<!--                    android:id="@+id/btnSearchAI"-->
-<!--                    android:layout_width="48dp"-->
-<!--                    android:layout_height="48dp"-->
-<!--                    android:background="?attr/selectableItemBackgroundBorderless"-->
-<!--                    android:scaleType="centerInside"-->
-<!--                    android:src="@drawable/search_icon"-->
-<!--                    android:contentDescription="Gửi đánh giá"/>-->
-<!--            </LinearLayout>-->
+            <!-- 💬 RecyclerView hiển thị các tin nhắn -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewChat"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:clipToPadding="false"
+                android:scrollbars="vertical" />
             <!-- GridView để hiển thị dữ liệu từ Firebase -->
             <GridView
                 android:id="@+id/gridView"
@@ -56,23 +50,18 @@
                 android:horizontalSpacing="10dp"
                 android:layout_marginTop="8dp"
                 android:stretchMode="columnWidth" />
-
-            <!-- 💬 RecyclerView hiển thị các tin nhắn -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewChat"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:padding="8dp"
-                android:clipToPadding="false"
-                android:scrollbars="vertical" />
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
+        android:layout_marginLeft="16dp"
+        android:background="@drawable/edittext_border"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="16dp"
         android:layout_marginBottom="6dp">
 
         <EditText
@@ -80,9 +69,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Hỏi Meko AI..."
-            android:background="@android:drawable/edit_text"
-            android:padding="8dp"
+            android:hint="  Hỏi Meko AI..."
+            android:inputType="text"
             android:layout_marginEnd="8dp"/>
 
         <ImageButton
@@ -100,6 +88,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        app:menu="@menu/bottom_nav_menu" />
+        app:menu="@menu/bottom_nav_menu"
+        android:background="#9CCFE6"
+        />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>
