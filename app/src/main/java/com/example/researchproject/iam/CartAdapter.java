@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+import com.example.researchproject.Payment.OrderInformationActivity;
 import com.example.researchproject.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -108,7 +109,20 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         });
         // ✅ Nút Thanh Toán (Chưa triển khai)
         holder.btnPay.setOnClickListener(v -> {
-            Toast.makeText(context, "Chức năng thanh toán đang phát triển.", Toast.LENGTH_SHORT).show();
+            int currentPosition = holder.getAdapterPosition();
+            if (currentPosition != RecyclerView.NO_POSITION) {
+                Post selectedPost = cartList.get(currentPosition);
+
+                // 🔹 Tạo Intent để chuyển sang OrderInformationActivity
+                Intent intent = new Intent(context, OrderInformationActivity.class);
+                intent.putExtra("postId", selectedPost.getPostId());
+                intent.putExtra("title", selectedPost.getTitle());
+                intent.putExtra("price", selectedPost.getPrice());
+
+                context.startActivity(intent);
+            } else {
+                Toast.makeText(context, "Lỗi khi chọn sản phẩm!", Toast.LENGTH_SHORT).show();
+            }
         });
     }
     @Override

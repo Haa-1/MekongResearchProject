@@ -2,6 +2,7 @@ package com.example.researchproject.iam;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -19,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.example.researchproject.HomeMekong;
 import com.example.researchproject.InformationActivity;
 import com.example.researchproject.MekoAI;
+import com.example.researchproject.Payment.OrderInformationActivity;
 import com.example.researchproject.R;
 import com.example.researchproject.ui.PostActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -129,9 +131,15 @@ public class PostDetailActivity extends AppCompatActivity {
             }
         });
         // ✅ Payment Button
-        btnPay.setOnClickListener(v ->
-                Toast.makeText(this, "Chức năng thanh toán đang phát triển.", Toast.LENGTH_SHORT).show()
-        );
+        btnPay.setOnClickListener(v -> {
+            Intent intent = new Intent(PostDetailActivity.this, OrderInformationActivity.class);
+
+            intent.putExtra("postId", postId);
+            intent.putExtra("title", title);
+            intent.putExtra("price", price);
+//            intent.putExtra("rentalTime", rentalTime);
+            startActivity(intent);
+        });
         // ✅ Submit Review
         btnSubmitReview.setOnClickListener(v -> {
             String reviewText = edtReview.getText().toString().trim();
