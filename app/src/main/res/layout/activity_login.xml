@@ -56,6 +56,7 @@
             android:fontFamily="@font/courier_prime_regular"
             android:hint="Phone/Email"
             android:inputType="text"
+            android:text="danhtrinhan711@gmail.com"
             android:textColor="#152F46"
             android:textSize="25sp" />
 
@@ -68,6 +69,7 @@
             android:ems="10"
             android:fontFamily="@font/courier_prime_regular"
             android:hint="Password"
+            android:text="Nam123456789"
             android:inputType="textPassword"
             android:textSize="25sp" />
 
