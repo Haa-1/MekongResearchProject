@@ -54,7 +54,8 @@ dependencies {
     implementation libs.androidx.navigation.ui
     implementation libs.androidx.activity
     implementation libs.androidx.constraintlayout
-    implementation fileTree(dir: 'E:\\zalopay-test', include: ['*.aar', '*.jar'], exclude: []);
+    implementation fileTree(dir: 'E:\\zalopay-test', include: ['*.aar', '*.jar'], exclude: [])
+    implementation fileTree(dir: 'D:\\zalopay-test\\zalopay-test', include: ['*.aar', '*.jar'], exclude: []);
 
     testImplementation("junit:junit:4.13.2");
     androidTestImplementation("androidx.test.ext:junit:1.1.5");

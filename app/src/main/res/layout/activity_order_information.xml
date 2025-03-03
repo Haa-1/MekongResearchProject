@@ -9,10 +9,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:gravity="center"
         android:text="Thông Tin Đơn Hàng"
-        android:textSize="30dp" />
+        android:textColor="#F6F7F8"
+        android:background="#9CCFE6"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="5dp" />
     <!-- 🔹 ScrollView chứa tất cả nội dung -->
     <ScrollView
         android:layout_width="match_parent"
@@ -22,32 +25,33 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
+            android:orientation="vertical"
+            android:padding="10dp"
+            >
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Tên người nhận"
-                android:textSize="20sp" />
-
+                android:textColor="#1569AB"
+                android:textStyle="bold"
+                android:textSize="14sp" />
             <EditText
                 android:id="@+id/editName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/edit_text_border"
-
                 android:inputType="text"
                 android:padding="12dp" />
-
             <TextView
                 android:id="@+id/textView3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Địa chỉ nhận:"
-                android:textSize="20sp" />
-
+                android:textStyle="bold"
+                android:textColor="#1569AB"
+                android:textSize="14sp" />
             <EditText
                 android:id="@+id/editAddress"
                 android:layout_width="match_parent"
@@ -60,9 +64,10 @@
                 android:id="@+id/textView4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#1569AB"
                 android:text="Số điện thoại:"
-                android:textSize="20sp" />
-
+                android:textStyle="bold"
+                android:textSize="14sp" />
             <EditText
                 android:id="@+id/editPhone"
                 android:layout_width="match_parent"
@@ -71,74 +76,78 @@
                 android:background="@drawable/edit_text_border"
                 android:inputType="text"
                 android:padding="12dp"/>
-
-
             <ListView
                 android:id="@+id/orderItem"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="47dp">
-
                 <TextView
                     android:layout_width="248dp"
                     android:layout_height="wrap_content"
                     android:text="Thời gian thuê"
-                    android:textSize="15dp" />
-
+                    android:textSize="14dp"
+                    android:textStyle="bold"
+                    android:textColor="#1569AB"
+                    />
                 <Button
                     android:id="@+id/btnIncrease"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="45dp"
                     android:layout_height="50dp"
                     android:text="+"
+                    android:textColor="#1569AB"
                     android:textSize="24sp" />
-
                 <EditText
                     android:id="@+id/editRetailPeriod"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:ems="10"
+                    android:ems="12"
                     android:inputType="text"
                     android:text="1" />
-
                 <Button
                     android:id="@+id/btnDecrease"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="45dp"
                     android:layout_height="50dp"
                     android:text="-"
+                    android:textColor="#FF2222"
                     android:textSize="24sp" />
-
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="47dp">
-
                 <TextView
                     android:layout_width="155dp"
                     android:layout_height="wrap_content"
                     android:text="Tổng tiền:"
+                    android:textColor="#1569AB"
+                    android:textStyle="bold"
                     android:textSize="20dp" />
-
                 <TextView
                     android:id="@+id/txtTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
-
             </LinearLayout>
             <Button
                 android:id="@+id/btnOrder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Button" />
+                android:backgroundTint="#648BB3"
+                android:textColor="#FFFFFF"
+                android:text="Thanh toán" />
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quay lại"
+                android:backgroundTint="#648BB3"
+                android:textColor="#FFFFFF"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

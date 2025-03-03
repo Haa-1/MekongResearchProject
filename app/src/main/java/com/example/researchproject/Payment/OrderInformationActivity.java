@@ -9,6 +9,7 @@ import android.os.StrictMode;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -47,7 +49,7 @@ public class OrderInformationActivity extends AppCompatActivity implements Order
     private ListView orderItem;
     private TextView txtTotal;
     private EditText editRentalPeriod;
-    private Button btnDecrease, btnIncrease, btnOrder;
+    private Button btnDecrease, btnBack,btnIncrease, btnOrder;
 
     private int rentalPeriod = 1;
     private double totalPrice;
@@ -72,7 +74,7 @@ public class OrderInformationActivity extends AppCompatActivity implements Order
         btnDecrease = findViewById(R.id.btnDecrease);
         btnIncrease = findViewById(R.id.btnIncrease);
         btnOrder = findViewById(R.id.btnOrder);
-
+        Button btnBack = findViewById(R.id.btnBack);
         databaseReference = FirebaseDatabase.getInstance().getReference("Order_History");
 
 
@@ -94,7 +96,8 @@ public class OrderInformationActivity extends AppCompatActivity implements Order
 
         // Tính tổng tiền ban đầu
         updateTotalPrice();
-
+        // Xử lý sự kiện khi bấm nút Back
+        btnBack.setOnClickListener(v -> showExitConfirmationDialog());
         // Xử lý tăng giảm thời gian thuê
         btnIncrease.setOnClickListener(v -> {
             rentalPeriod++;
@@ -133,6 +136,25 @@ public class OrderInformationActivity extends AppCompatActivity implements Order
             saveOrderToDatabase();
 
         });
+
+        // Hiển thị nút Back trên ActionBar
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Thông tin đặt hàng"); // Tùy chỉnh tiêu đề
+        }
+    }
+    // Xử lý khi nhấn nút Back trên ActionBar
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            // Quay lại PostDetailActivity
+            Intent intent = new Intent(OrderInformationActivity.this, PostDetailActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Đảm bảo không mở nhiều Activity trùng lặp
+            startActivity(intent);
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
     @Override
     public void onQuantityChanged() {
@@ -187,6 +209,7 @@ public class OrderInformationActivity extends AppCompatActivity implements Order
         super.onNewIntent(intent);
         ZaloPaySDK.getInstance().onResult(intent);
     }
+
     private void saveOrderToDatabase(){
         String customerName = editName.getText().toString().trim();
         String customerAddress = editAddress.getText().toString().trim();
@@ -209,4 +232,18 @@ public class OrderInformationActivity extends AppCompatActivity implements Order
                 .addOnSuccessListener(aVoid -> Log.d("Firebase", "Giao dịch được lưu thành công"))
                 .addOnFailureListener(e -> Log.e("Firebase", "Lỗi khi lưu giao dịch", e));
     }
+    private void showExitConfirmationDialog() {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Khách hàng chưa thanh toán, vui lòng thanh toán!")
+                .setPositiveButton("Tiếp tục thanh toán", (dialog, which) -> dialog.dismiss()) // Giữ nguyên trang
+                .setNegativeButton("Thoát", (dialog, which) -> {
+                    // Quay về PostDetailActivity
+                    Intent intent = new Intent(OrderInformationActivity.this, PostDetailActivity.class);
+                    startActivity(intent);
+                    finish(); // Đóng Activity hiện tại
+                })
+                .setCancelable(false) // Không thể bấm ra ngoài để thoát
+                .show();
+    }
+
 }

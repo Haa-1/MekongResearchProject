@@ -2,6 +2,7 @@ package com.example.researchproject;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
@@ -48,8 +49,8 @@ public class MekoAI extends AppCompatActivity {
     private List<Post> filteredFirebaseData = new ArrayList<>();
     private String geminiResponse = "";
     // Gemini API
-    private final String API_KEY = "AIzaSyDpowdMhSBVL9qKWQ_eVrsi7FKbb4_Y3yE";
-    private final String API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + API_KEY;
+    private final String API_KEY = "AIzaSyDXMP_Of_Bf5LK2yNFTRbs_fYrwx6DIyHE";
+    private final String API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b-001:generateContent?key=" + API_KEY;
     BottomNavigationView bottomNavigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,6 +170,8 @@ public class MekoAI extends AppCompatActivity {
             e.printStackTrace();
         }
         RequestBody body = RequestBody.create(requestBody.toString(), JSON);
+
+
         Request request = new Request.Builder()
                 .url(API_URL)
                 .post(body)
@@ -176,6 +179,7 @@ public class MekoAI extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                Log.e("Gemini API", "Lỗi kết nối: " + e.getMessage());
                 runOnUiThread(() -> {
                     chatMessages.add(new ChatMessage("❌ Hệ thống Meko AI đang gặp lỗi, xin lỗi nhiều nha.", false));
                     chatAdapter.notifyItemInserted(chatMessages.size() - 1);
@@ -185,8 +189,11 @@ public class MekoAI extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 String geminiResponse = "";
                 if (response.isSuccessful() && response.body() != null) {
+                    Log.e("Gemini API", "Lỗi HTTP " + response.code() + ": " + response.message());
+
                     try {
                         String responseData = response.body().string();
+                        Log.d("Gemini API", "Phản hồi: " + responseData);
                         JSONObject jsonResponse = new JSONObject(responseData);
                         geminiResponse = jsonResponse.getJSONArray("candidates")
                                 .getJSONObject(0)
