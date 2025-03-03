@@ -1,33 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home"
+        android:title="Trang chủ" />
 
     <item
-        android:id="@+id/navigation_home"
-        android:icon="@drawable/home"
-        android:title="@string/title_home" />
-
-
-    <item
-        android:id="@+id/navigation_message"
-        android:icon="@drawable/message"
-        android:title="@string/title_message" />
-
+        android:id="@+id/nav_ai"
+        android:icon="@drawable/search_icon"
+        android:title="Meko AI" />
 
     <item
-        android:id="@+id/navigation_trip"
-        android:icon="@drawable/trip"
-        android:title="@string/title_trip" />
-
-
-    <item
-        android:id="@+id/navigation_support"
-        android:icon="@drawable/support"
-        android:title="@string/title_support" />
+        android:id="@+id/nav_post"
+        android:icon="@drawable/ic_post"
+        android:title="Đăng tin" />
 
     <item
-        android:id="@+id/navigation_settings"
-        android:icon="@drawable/settings"
-        android:title="@string/title_settings" />
+        android:id="@+id/nav_cart"
+        android:icon="@drawable/ic_cart"
+        android:title="Giỏ hàng" />
 
-
+    <item
+        android:id="@+id/nav_info"
+        android:icon="@drawable/ic_infor"
+        android:title="Thông tin" />
 </menu>

@@ -18,34 +18,19 @@
                 android:id="@+id/txtTitleHeader"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:text="Trang thông tin khách hàng"
+                android:text="Giỏ hàng"
                 android:textColor="#F6F7F8"
                 android:background="#9CCFE6"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:gravity="center"
                 android:layout_marginBottom="5dp" />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#FAFAFA"
-                android:padding="16dp"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/txtWelcome"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Chào mừng!"
-                    android:textSize="20sp"
-                    android:layout_marginBottom="5dp" />
-                <Button
-                    android:id="@+id/btnLogout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="#648BB3"
-                    android:textColor="#FFFFFF"
-                    android:text="Đăng xuất" />
-            </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewCart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"/>
         </LinearLayout>
     </ScrollView>
     <!-- 🏠 Bottom Navigation -->
