@@ -278,6 +278,8 @@ public class PostActivity extends AppCompatActivity {
     private void savePostToDatabase(String title, String serviceInfo, String price, String rentalTime, String address, String contact, String imageUrl) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
         String postId = databaseReference.push().getKey(); // ✅ Tạo ID duy nhất cho bài đăng
+        long timestamp = System.currentTimeMillis(); // ✅ Lấy timestamp hiện tại
+
         if (postId != null) {
             HashMap<String, Object> postMap = new HashMap<>();
             postMap.put("title", title);
@@ -287,13 +289,26 @@ public class PostActivity extends AppCompatActivity {
             postMap.put("rentalTime", rentalTime);
             postMap.put("address", address);
             postMap.put("contact", contact);
-            postMap.put("imageUrl", imageUrl); // ✅ Đảm bảo thêm imageUrl vào đây
+            postMap.put("imageUrl", imageUrl);
+            postMap.put("timestamp", timestamp); // ✅ Thêm timestamp
+
             Log.d("FirebaseSave", "Dữ liệu đang lưu: " + postMap.toString()); // Log dữ liệu trước khi lưu
+
             databaseReference.child(postId).setValue(postMap)
-                    .addOnSuccessListener(aVoid -> Log.d("FirebaseSave", "Đăng bài thành công!"))
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("FirebaseSave", "Đăng bài thành công!");
+                        Toast.makeText(PostActivity.this, "Đăng tin thành công!", Toast.LENGTH_SHORT).show();
+
+                        // ✅ Quay lại danh sách bài đăng & làm mới GridView
+                        Intent intent = new Intent(PostActivity.this, HomeMekong.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                    })
                     .addOnFailureListener(e -> Log.e("FirebaseSave", "Lỗi khi đăng bài: " + e.getMessage()));
         }
     }
+
     // Interfaces để xử lý callback khi upload ảnh
     interface OnUploadSuccessListener {
         void onSuccess(String imageUrl);

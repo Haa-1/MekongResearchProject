@@ -53,6 +53,11 @@ public class PostAdActivity extends AppCompatActivity {
         btnSelectImage = findViewById(R.id.btnSelectImage);
         btnPostAd = findViewById(R.id.btnPostAd);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
+        Button btnPost = findViewById(R.id.btnPost);
+        btnPost.setOnClickListener(v -> {
+            Intent intent = new Intent(PostAdActivity.this, PostActivity.class);
+            startActivity(intent);
+        });
         // Xử lý sự kiện khi chọn item trong menu
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override

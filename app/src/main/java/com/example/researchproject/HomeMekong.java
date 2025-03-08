@@ -59,12 +59,14 @@ public class HomeMekong extends AppCompatActivity {
     private GridView gridView;
     private PostAdapterGrid postAdapter;
     public static List<Post> postList;
+    // Define the originalPostList at the class level
+    private List<Post> originalPostList = new ArrayList<>();
     private List<String> searchSuggestions; // Danh sách gợi ý
     private ArrayAdapter<String> suggestionAdapter;
     private DatabaseReference databaseReference;
     private AutoCompleteTextView searchView;
     private FirebaseAuth mAuth;
-    private TextView txtWelcome;
+//    private TextView txtWelcome;
     private BottomNavigationView bottomNavigationView;
     private ViewPager2 viewPagerAds;
     private AdSliderAdapter adSliderAdapter;
@@ -81,8 +83,9 @@ public class HomeMekong extends AppCompatActivity {
         gridView = findViewById(R.id.gridView);
         postAdapter = new PostAdapterGrid(this, postList);
         gridView.setAdapter(postAdapter);
+        gridView.setNestedScrollingEnabled(true);
         searchView = findViewById(R.id.searchView);
-        txtWelcome = findViewById(R.id.txtWelcome);
+//        txtWelcome = findViewById(R.id.txtWelcome);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         viewPagerAds = findViewById(R.id.viewPagerAds);
         tabDots = findViewById(R.id.tabDots);
@@ -97,15 +100,11 @@ public class HomeMekong extends AppCompatActivity {
         // Kết nối Firebase
         adsRef = FirebaseDatabase.getInstance().getReference("Ads");
         loadAds();
-
         // Tạo hiệu ứng Slide Tự Động
         autoSlideAds();
-
         // Kết nối TabLayout với ViewPager2
         new TabLayoutMediator(tabDots, viewPagerAds,
                 (tab, position) -> {}).attach();
-        String userEmail = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getEmail() : "User";
-        txtWelcome.setText("Chào mừng, " + userEmail + "!");
         // Firebase Reference
         databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
         // ✅ Lấy dữ liệu từ Firebase để tạo gợi ý
@@ -162,37 +161,51 @@ public class HomeMekong extends AppCompatActivity {
             return true;
         });
     }
-    // ✅ Lấy dữ liệu để tạo gợi ý tìm kiếm
+    // ✅ Lấy dữ liệu để tạo gợi ý tìm kiếm & đảm bảo bài mới nhất lên đầu
     private void loadSearchSuggestions() {
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.orderByChild("timestamp").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Set<String> uniqueSuggestions = new HashSet<>();
-                postList.clear();
+                List<Post> tempList = new ArrayList<>(); // Danh sách tạm thời để lưu bài đăng
+
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Post post = dataSnapshot.getValue(Post.class);
                     if (post != null) {
-                        postList.add(post);
+                        tempList.add(post);
                         uniqueSuggestions.add(post.getTitle());
                         uniqueSuggestions.add(post.getAddress());
                         uniqueSuggestions.add(post.getServiceInfo());
                     }
                 }
+
+                // ✅ Sắp xếp danh sách theo timestamp giảm dần (bài mới nhất lên đầu)
+                tempList.sort((p1, p2) -> Long.compare(p2.getTimestamp(), p1.getTimestamp()));
+
+                // ✅ Cập nhật danh sách bài đăng chính
+                postList.clear();
+                postList.addAll(tempList);
+                originalPostList.clear();
+                originalPostList.addAll(tempList);
+
+                // ✅ Cập nhật gợi ý tìm kiếm
                 searchSuggestions.clear();
                 searchSuggestions.addAll(uniqueSuggestions);
                 suggestionAdapter.notifyDataSetChanged();
                 postAdapter.notifyDataSetChanged();
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(HomeMekong.this, "Lỗi tải dữ liệu: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
+
     // ✅ Lọc bài đăng theo gợi ý hoặc nội dung nhập
     private void filterPosts(String query) {
         List<Post> filteredList = new ArrayList<>();
-        for (Post post : postList) {
+        for (Post post : originalPostList) { // Sử dụng originalPostList để lọc
             if (post.getTitle().toLowerCase().contains(query.toLowerCase()) ||
                     post.getAddress().toLowerCase().contains(query.toLowerCase()) ||
                     post.getServiceInfo().toLowerCase().contains(query.toLowerCase())) {
@@ -205,6 +218,7 @@ public class HomeMekong extends AppCompatActivity {
             Toast.makeText(this, "Không tìm thấy kết quả!", Toast.LENGTH_SHORT).show();
         }
     }
+
     // ✅ Load Quảng Cáo Từ Firebase
     private void loadAds() {
         adsRef.addValueEventListener(new ValueEventListener() {
