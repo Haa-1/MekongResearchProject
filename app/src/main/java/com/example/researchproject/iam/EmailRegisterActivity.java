@@ -20,8 +20,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EmailRegisterActivity extends AppCompatActivity {
 
@@ -124,9 +129,35 @@ public class EmailRegisterActivity extends AppCompatActivity {
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        Intent intent = new Intent(EmailRegisterActivity.this, HomeMekong.class);
-                        startActivity(intent);
-                        finishAffinity();
+                        FirebaseUser user = auth.getCurrentUser();
+                        if (user != null) {
+                            String uid = user.getUid(); // Lấy UID từ Authentication
+                            DatabaseReference database = FirebaseDatabase.getInstance().getReference("Users");
+
+                            // Tạo thông tin user
+                            Map<String, Object> userData = new HashMap<>();
+                            userData.put("email", email);
+                            userData.put("dob", dob);
+                            userData.put("nickname", nickname);
+                            userData.put("role", "user");  // 👤 Mặc định role = "user"
+                            userData.put("status", "active");
+
+                            // Lưu vào Firebase Database
+                            database.child(uid).setValue(userData)
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d(TAG, "User created successfully in database");
+                                        Toast.makeText(EmailRegisterActivity.this, "Register successful!", Toast.LENGTH_SHORT).show();
+
+                                        // Chuyển đến HomeMekong sau khi đăng ký thành công
+                                        Intent intent = new Intent(EmailRegisterActivity.this, HomeMekong.class);
+                                        startActivity(intent);
+                                        finishAffinity();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.e(TAG, "Failed to save user data", e);
+                                        Toast.makeText(EmailRegisterActivity.this, "Failed to save user data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    });
+                        }
                     } else {
                         Log.w(TAG, "createUserWithEmail:failure", task.getException());
                         Toast.makeText(EmailRegisterActivity.this, "Authentication failed: " + task.getException().getMessage(),
@@ -134,6 +165,7 @@ public class EmailRegisterActivity extends AppCompatActivity {
                     }
                 });
     }
+
 
     private boolean isValidEmail(String email) {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();

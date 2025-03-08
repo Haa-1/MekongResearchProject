@@ -4,32 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
-   >
-    <LinearLayout
+    android:gravity="center">
+    <TextView
+        android:id="@+id/txtlogo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:text="MekongGo"
         android:gravity="center"
+        android:textSize="20sp"
         android:background="#9CCFE6"
-       >
-    <!-- Chào mừng -->
-    <TextView
-        android:id="@+id/txtWelcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Chào mừng!"
-        android:textSize="16sp"
+        android:textColor="#FFFFFF"
         android:textStyle="bold"
-        android:layout_marginBottom="4dp" />
+        />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
         android:background="#9CCFE6"
-        android:padding="8dp"
-        android:layout_marginTop="10dp">
+
+        >
+
         <ImageView
             android:id="@+id/search"
             android:layout_width="48dp"
@@ -48,7 +43,6 @@
         android:padding="12dp"
         android:background="@android:drawable/edit_text" />
     </LinearLayout>
-    </LinearLayout>
     <!-- 📝 Sử dụng NestedScrollView để cuộn toàn bộ nội dung -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -63,16 +57,26 @@
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/viewPagerAds"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginBottom="16dp"/>
+                android:layout_height="190dp"
+                />
             <!-- Dots Indicator (Optional) -->
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabDots"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="10dp"
                 app:tabIndicatorColor="#1569AB"
                 app:tabIndicatorFullWidth="false"
                 android:layout_gravity="center_horizontal"/>
+                <TextView
+                    android:id="@+id/txtgoiy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gợi ý hôm nay"
+                    android:textSize="14sp"
+                    android:textColor="#1569AB"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginLeft="14dp"/>
             <!-- 🏗️ GridView (Đặt trong NestedScrollView) -->
             <GridView
                 android:id="@+id/gridView"
@@ -95,6 +99,4 @@
         app:menu="@menu/bottom_nav_menu"
         app:itemIconTint="@color/bottom_nav_icon_color"
         app:itemTextColor="@color/bottom_nav_icon_color"/>
-
-
 </LinearLayout>

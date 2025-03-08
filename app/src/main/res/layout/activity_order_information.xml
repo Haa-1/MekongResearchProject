@@ -132,6 +132,8 @@
                     android:id="@+id/txtTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="#03520F"
+                    android:textStyle="bold"
                     android:layout_weight="1" />
             </LinearLayout>
             <Button
@@ -143,7 +145,7 @@
                 android:text="Thanh toán" />
             <Button
                 android:id="@+id/btnBack"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Quay lại"
                 android:backgroundTint="#648BB3"

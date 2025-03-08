@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Trang quản trị MekongGo"
+        android:textColor="#F6F7F8"
+        android:background="#9CCFE6"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="5dp" />
+    <Button
+        android:id="@+id/btnManageUsers"
+        android:text="Quản lý Người Dùng"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#648BB3"
+        android:textColor="#FFFFFF"/>
+
+    <Button
+        android:id="@+id/btnManagePosts"
+        android:text="Quản lý Bài Đăng"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#648BB3"
+        android:textColor="#FFFFFF"/>
+
+    <Button
+        android:id="@+id/btnManageAds"
+        android:text="Quản lý Quảng Cáo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#648BB3"
+        android:textColor="#FFFFFF"/>
+</LinearLayout>
