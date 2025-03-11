@@ -16,7 +16,8 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="96dp">
+        android:layout_height="96dp"
+        >
 
         <LinearLayout
             android:layout_width="391dp"
@@ -26,22 +27,22 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Nguoi nhan:" />
+                android:text="Thông tin khách hàng:" />
 
             <TextView
-                android:id="@+id/txtCustomerName"
+                android:id="@+id/txtCustomerName_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Nguyen Van A" />
 
             <TextView
-                android:id="@+id/txtCustomerAddress"
+                android:id="@+id/txtCustomerAddress_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Dia chi:" />
 
             <TextView
-                android:id="@+id/txtCustomerPhone"
+                android:id="@+id/txtCustomerPhone_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Phone" />
@@ -65,13 +66,13 @@
 
 
             <TextView
-                android:id="@+id/txtAddress"
+                android:id="@+id/txtAddress_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Dia chi:" />
 
             <TextView
-                android:id="@+id/txtPhone"
+                android:id="@+id/txtPhone_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Phone" />
@@ -88,22 +89,23 @@
 
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/imageView_detail"
                 android:layout_width="5dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/search_icon" />
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_weight="3.2"
-                android:orientation="vertical"
                 android:background="@drawable/edit_text_border"
-                android:paddingStart="10dp"
-                android:layout_gravity="center">
+                android:orientation="vertical"
+                android:paddingStart="10dp">
 
                 <TextView
-                    android:id="@+id/txtTitle"
+                    android:id="@+id/txtTitle_detail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Tên dịch vụ"
@@ -112,12 +114,12 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/txtPrice"
+                    android:id="@+id/txtPrice_detail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Giá: 0 VND"
-                    android:textSize="14sp"
-                    android:textColor="#FF5722" />
+                    android:textColor="#FF5722"
+                    android:textSize="14sp" />
 
             </LinearLayout>
         </LinearLayout>
@@ -138,7 +140,7 @@
                 android:text="So luong" />
 
             <TextView
-                android:id="@+id/txtQuantity"
+                android:id="@+id/txtQuantity_detail"
                 android:layout_width="122dp"
                 android:layout_height="match_parent"
                 android:text="So luong"
@@ -154,10 +156,29 @@
             <TextView
                 android:layout_width="151dp"
                 android:layout_height="match_parent"
-                android:text="Tong tien: " />
+                android:text="Thời gian thuê: " />
 
             <TextView
-                android:id="@+id/txtTotal"
+                android:id="@+id/txtRentalPeriod_detail"
+                android:layout_width="122dp"
+                android:layout_height="match_parent"
+                android:text="So luong"
+                android:layout_gravity="right"
+                android:gravity="right"/>
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="151dp"
+                android:layout_height="match_parent"
+                android:text="Tổng tiền: " />
+
+            <TextView
+                android:id="@+id/txtTotal_detail"
                 android:layout_width="122dp"
                 android:layout_height="match_parent"
                 android:text="So luong"

@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -20,6 +20,12 @@
         android:theme="@style/Theme.ResearchProject"
         tools:targetApi="31">
         <activity
+            android:name=".History.OrderHistoryDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".History.OrderHistoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".Payment.OrderSuccessfulActivity"
             android:exported="false" />
         <activity
@@ -28,8 +34,10 @@
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.categorsy.BROWSABLE" />
+
                 <data
                     android:host="app"
                     android:scheme="demozpdk" />
@@ -37,9 +45,7 @@
         </activity>
         <activity
             android:name=".iam.PostAdActivity"
-            android:exported="false">
-
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".MekoAI"
             android:exported="false" />
@@ -55,13 +61,14 @@
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.categorsy.BROWSABLE" />
+
                 <data
                     android:host="app"
                     android:scheme="demozpdk" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".HomeMekong"

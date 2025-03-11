@@ -25,6 +25,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.researchproject.HomeMekong;
+import com.example.researchproject.Notification.NotificationData;
 import com.example.researchproject.Payment.Api.CreateOrder;
 import com.example.researchproject.R;
 import com.example.researchproject.iam.PostDetailActivity;
@@ -166,6 +167,7 @@ public class OrderInformationActivity extends AppCompatActivity implements Order
             totalPrice += item.getPrice() * item.getQuantity() * rentalPeriod;
         }
         txtTotal.setText(String.format("%.3f VNĐ", totalPrice));
+
     }
 
     private void processZaloPayPayment() {
@@ -181,10 +183,31 @@ public class OrderInformationActivity extends AppCompatActivity implements Order
                 ZaloPaySDK.getInstance().payOrder(OrderInformationActivity.this, token, "demozpdk://app", new PayOrderListener() {
                     @Override
                     public void onPaymentSucceeded(String s, String s1, String s2) {
+
+                        Log.d("result", "Thanh toán thành công"+s );
+                        String customerName = editName.getText().toString().trim();
+                        String customerAddress = editAddress.getText().toString().trim();
+                        String customerPhone = editPhone.getText().toString().trim();
+                        String rentalPeriod = editRentalPeriod.getText().toString().trim();
+                        String totalPrice = txtTotal.getText().toString().trim();
+                        String quantity = String.valueOf(orderItems.get(0).getQuantity());
+                        String postId = getIntent().getStringExtra("postId");
+
+                        Log.d("Zalo","Ma giao dich"+token);
+                        Log.d("Zalo","return-code"+ code);
+
+
                         Intent intent1 = new Intent(OrderInformationActivity.this, OrderSuccessfulActivity.class);
-                        intent1.putExtra("result", "Thanh toán thành công");
+                        intent1.putExtra("customerName", customerName);
+                        intent1.putExtra("customerAddress", customerAddress);
+                        intent1.putExtra("customerPhone", customerPhone);
+                        intent1.putExtra("rentalPeriod", rentalPeriod);
+                        intent1.putExtra("quantity", quantity);
+                        intent1.putExtra("totalPrice", totalPrice);
+                        intent1.putExtra("postId", postId);
                         Log.d("result", "Thanh toán thành công");
                         startActivity(intent1);
+                        Log.d("result", "Thanh toán thành công");
                     }
                     @Override
                     public void onPaymentCanceled(String s, String s1) {
@@ -215,7 +238,9 @@ public class OrderInformationActivity extends AppCompatActivity implements Order
         String customerAddress = editAddress.getText().toString().trim();
         String customerPhone = editPhone.getText().toString().trim();
         String rentalPeriod = editRentalPeriod.getText().toString().trim();
+
         String totalPrice = txtTotal.getText().toString().trim();
+        String quantity = String.valueOf(orderItems.get(0).getQuantity());
         String postId = getIntent().getStringExtra("postId");
 
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -226,6 +251,8 @@ public class OrderInformationActivity extends AppCompatActivity implements Order
         orderHistory.put("customerAddress", customerAddress);
         orderHistory.put("customerPhone", customerPhone);
         orderHistory.put("rentalPeriod", rentalPeriod);
+        orderHistory.put("orderId", orderId);
+        orderHistory.put("quantity",quantity);
         orderHistory.put("totalPrice", totalPrice);
         orderHistory.put("postId", postId);
         databaseReference.child(userId).child(orderId).setValue(orderHistory)
@@ -245,5 +272,4 @@ public class OrderInformationActivity extends AppCompatActivity implements Order
                 .setCancelable(false) // Không thể bấm ra ngoài để thoát
                 .show();
     }
-
 }

@@ -12,6 +12,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.researchproject.History.OrderHistoryActivity;
 import com.example.researchproject.databinding.ActivityInformationBinding;
 import com.example.researchproject.iam.CartActivity;
 import com.example.researchproject.iam.LoginActivity;
@@ -22,7 +23,7 @@ public class InformationActivity extends AppCompatActivity {
     TextView tv_profile;
     private ActivityInformationBinding binding;
     private FirebaseAuth mAuth;
-    private Button  btnLogout;
+    private Button  btnLogout, btnHistoryOrder;
     BottomNavigationView bottomNavigationView;
     private TextView txtWelcome;
     @Override
@@ -38,6 +39,7 @@ public class InformationActivity extends AppCompatActivity {
         String userEmail = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getEmail() : "User";
         txtWelcome.setText("Email:  " + userEmail );
         btnLogout = findViewById(R.id.btnLogout);
+        btnHistoryOrder = findViewById(R.id.btnHistoryOrder);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         // Xử lý sự kiện khi chọn item trong menu
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
@@ -66,5 +68,9 @@ public class InformationActivity extends AppCompatActivity {
             startActivity(new Intent(InformationActivity.this, LoginActivity.class));
             finish();
         });
+        btnHistoryOrder.setOnClickListener(v -> {
+            startActivity(new Intent(InformationActivity.this, OrderHistoryActivity.class));
+        });
+
     }
 }
