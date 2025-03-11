@@ -14,6 +14,9 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="delete_button_desc">Xóa dịch vụ</string>
+    <string name="search_icon_desc">Search</string>
+    <string name="search_hint">SearchView</string>
+    <string name="goiy_homnay">Recomendation</string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus

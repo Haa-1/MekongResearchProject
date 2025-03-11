@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:background="#FAFAFA"
     >
+
     <!-- 🔹 ScrollView chứa tất cả nội dung -->
     <ScrollView
         android:layout_width="match_parent"
@@ -17,6 +18,34 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="8dp"
+                android:layout_marginBottom="16dp">
+                <!-- 📢 Nút Đăng Tin -->
+                <Button
+                    android:id="@+id/btnPost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Đăng Tin"
+                    android:backgroundTint="#648BB3"
+                    android:textColor="#FFFFFF"
+                    />
+                <!-- 📝 Tiêu đề chính -->
+                <TextView
+                    android:id="@+id/txtTitleHeader"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="ĐĂNG QUẢNG CÁO"
+                    android:textColor="#1569AB"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:gravity="end"/>
+            </LinearLayout>
             <!-- 📝 Tiêu đề quảng cáo -->
             <EditText
                 android:id="@+id/edtAdTitle"

@@ -37,7 +37,9 @@
             android:layout_height="wrap_content"
             android:text="Giá: 0 VND"
             android:textSize="14sp"
-            android:textColor="#FF5722" />
+            android:textStyle="bold"
+            android:textColor="#03520F"
+            />
     </LinearLayout>
 
     <!-- ❌ Nút Xóa -->

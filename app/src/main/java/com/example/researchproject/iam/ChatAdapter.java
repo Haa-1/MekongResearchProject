@@ -71,7 +71,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
             int index = message.getMessage().indexOf(highlight);
             while (index >= 0) {
                 if (highlight.length() > 0) { // ✅ Kiểm tra độ dài
-                    spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#FFD700")),
+                    spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#1569AB")),
                             index, index + highlight.length(), SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
                 index = message.getMessage().indexOf(highlight, index + 1); // Tìm các vị trí tiếp theo

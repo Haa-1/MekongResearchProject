@@ -2,6 +2,7 @@ package com.example.researchproject;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,6 +61,24 @@ public class MekoAI extends AppCompatActivity {
         btnSearchAI = findViewById(R.id.btnSearchAI);
         edtUserQuery = findViewById(R.id.edtUserQuery);
         gridView = findViewById(R.id.gridView);
+        String input = "Đi du lịch cần thơ rất thú vị, tôi cũng thích sóc trăng và huế.";
+        List<String> suggestions = List.of(
+                "cần thơ", "sóc trăng", "huế", "xe", "du lịch",
+                "an giang", "vũng tàu", "bạc liêu", "bắc giang", "bắc kạn",
+                "bắc ninh", "bến tre", "bình định", "bình dương", "bình phước",
+                "bình thuận", "cà mau", "cao bằng", "đà nẵng", "đắk lắk",
+                "đắk nông", "điện biên", "đồng nai", "đồng tháp", "gia lai",
+                "hà giang", "hà nam", "hà nội", "hà tĩnh", "hải dương",
+                "hải phòng", "hậu giang", "hoà bình", "hưng yên", "khánh hoà",
+                "kiên giang", "kon tum", "lai châu", "lâm đồng", "lạng sơn",
+                "lào cai", "long an", "nam định", "nghệ an", "ninh bình",
+                "ninh thuận", "phú thọ", "phú yên", "quảng bình", "quảng nam",
+                "quảng ngãi", "quảng ninh", "quảng trị", "sơn la", "tây ninh",
+                "thái bình", "thái nguyên", "thanh hoá", "thừa thiên huế", "tiền giang","nghĩ dưỡng","lễ","biển","giá",
+                "trà vinh", "thuê","chạy","thấp","tuyên quang", "vĩnh long", "vĩnh phúc", "yên bái"
+        );
+        List<String> keywords = extractKeywords(input, suggestions);
+        System.out.println(keywords);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         recyclerViewChat = findViewById(R.id.recyclerViewChat);
         txtSuggestion = findViewById(R.id.txtSuggestion);
@@ -117,15 +136,17 @@ public class MekoAI extends AppCompatActivity {
         });
     }
     // 🎯 Hàm LẤY TỪ KHÓA trong dấu ngoặc đơn ()
-    private List<String> extractKeywords(String input) {
+    // Move this method to the outer class
+    private List<String> extractKeywords(String input, List<String> suggestions) {
         List<String> keywords = new ArrayList<>();
-        Pattern pattern = Pattern.compile("\\((.*?)\\)");
-        Matcher matcher = pattern.matcher(input);
-        while (matcher.find()) {
-            keywords.add(matcher.group(1).trim());
+        for (String suggestion : suggestions) {
+            if (input.contains(suggestion)) {
+                keywords.add(suggestion);
+            }
         }
         return keywords;
     }
+
     // 🔥 Firebase Query (Chỉ tìm từ khóa trong dấu ngoặc)
     private void fetchFilteredFirebase(String keyword) {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -170,8 +191,6 @@ public class MekoAI extends AppCompatActivity {
             e.printStackTrace();
         }
         RequestBody body = RequestBody.create(requestBody.toString(), JSON);
-
-
         Request request = new Request.Builder()
                 .url(API_URL)
                 .post(body)
@@ -190,7 +209,6 @@ public class MekoAI extends AppCompatActivity {
                 String geminiResponse = "";
                 if (response.isSuccessful() && response.body() != null) {
                     Log.e("Gemini API", "Lỗi HTTP " + response.code() + ": " + response.message());
-
                     try {
                         String responseData = response.body().string();
                         Log.d("Gemini API", "Phản hồi: " + responseData);
@@ -221,9 +239,25 @@ public class MekoAI extends AppCompatActivity {
             chatAdapter.notifyItemInserted(chatMessages.size() - 1);
             edtUserQuery.setText("");
             recyclerViewChat.scrollToPosition(chatMessages.size() - 1);
+            // ✅ Tạo danh sách các gợi ý từ khóa
+            List<String> suggestions = List.of(
+                    "cần thơ", "sóc trăng", "huế", "xe", "du lịch",
+                    "an giang", "vũng tàu", "bạc liêu", "bắc giang", "bắc kạn",
+                    "bắc ninh", "bến tre", "bình định", "bình dương", "bình phước",
+                    "bình thuận", "cà mau", "cao bằng", "đà nẵng", "đắk lắk",
+                    "đắk nông", "điện biên", "đồng nai", "đồng tháp", "gia lai",
+                    "hà giang", "hà nam", "hà nội", "hà tĩnh", "hải dương",
+                    "hải phòng", "hậu giang", "hoà bình", "hưng yên", "khánh hoà",
+                    "kiên giang", "kon tum", "lai châu", "lâm đồng", "lạng sơn",
+                    "lào cai", "long an", "nam định", "nghệ an", "ninh bình",
+                    "ninh thuận", "phú thọ", "phú yên", "quảng bình", "quảng nam",
+                    "quảng ngãi", "quảng ninh", "quảng trị", "sơn la", "tây ninh",
+                    "thái bình", "thái nguyên", "thanh hoá", "thừa thiên huế", "tiền giang","nghĩ dưỡng","lễ","biển","giá",
+                    "trà vinh", "thuê","chạy","thấp","tuyên quang", "vĩnh long", "vĩnh phúc", "yên bái"
+            );
 
-            // ✅ Xử lý từ khóa trong dấu ngoặc đơn ()
-            List<String> keywords = extractKeywords(userMessage);
+            // ✅ Xử lý từ khóa từ danh sách gợi ý
+            List<String> keywords = extractKeywords(userMessage, suggestions);
             if (!keywords.isEmpty()) {
                 for (String keyword : keywords) {
                     fetchFilteredFirebase(keyword); // Tìm kiếm từng từ khóa
@@ -259,9 +293,9 @@ public class MekoAI extends AppCompatActivity {
                 }
             }
         };
-
         handler.post(typingRunnable);
     }
+
     // 🎯 Kiểm tra từ khóa trong tất cả các trường của Post
     private boolean containsKeyword(Post post, String keyword) {
         keyword = keyword.toLowerCase();

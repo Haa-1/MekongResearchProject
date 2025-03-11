@@ -28,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Giá: 0 VND"
-        android:textColor="#FF5722"
+        android:textColor="#03520F"
         android:textSize="14sp"
         android:padding="4dp"/>
 

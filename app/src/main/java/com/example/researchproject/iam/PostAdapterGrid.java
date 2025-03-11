@@ -77,4 +77,5 @@ public class PostAdapterGrid extends ArrayAdapter<Post> implements Filterable {
         postList.addAll(filteredList);
         notifyDataSetChanged();
     }
+
 }
