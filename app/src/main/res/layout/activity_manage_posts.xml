@@ -6,7 +6,7 @@
         android:id="@+id/txtTitleHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Trang quản lí đơn hàng"
+        android:text="Trang quản lí bài đăng"
         android:textColor="#F6F7F8"
         android:background="#9CCFE6"
         android:textSize="24sp"

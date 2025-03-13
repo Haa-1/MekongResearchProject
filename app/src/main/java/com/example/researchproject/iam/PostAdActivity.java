@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,13 +19,20 @@ import com.example.researchproject.MekoAI;
 import com.example.researchproject.R;
 import com.example.researchproject.ui.PostActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MultipartBody;
@@ -80,7 +88,7 @@ public class PostAdActivity extends AppCompatActivity {
             }
         });
         // 🟡 Kết nối Firebase Database
-        databaseReference = FirebaseDatabase.getInstance().getReference("Advertisements");
+        databaseReference = FirebaseDatabase.getInstance().getReference("Ads");
         // 📁 Chọn hình ảnh
         btnSelectImage.setOnClickListener(v -> openFileChooser());
         // 🚀 Đăng quảng cáo
@@ -101,35 +109,78 @@ public class PostAdActivity extends AppCompatActivity {
             Glide.with(this).load(imageUri).into(imgAd); // Hiển thị ảnh đã chọn
         }
     }
+// Xử lý đăng bài
+private void uploadAd() {
+    String adTitle = edtAdTitle.getText().toString().trim();
 
-    // ✅ Xử lý đăng quảng cáo (Upload ảnh lên Imgur và lưu vào Firebase)
-    private void uploadAd() {
-        String adTitle = edtAdTitle.getText().toString().trim();
-
-        if (adTitle.isEmpty() || imageUri == null) {
-            Toast.makeText(this, "Vui lòng nhập tiêu đề và chọn hình ảnh!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Đang tải hình ảnh lên Imgur...");
-        progressDialog.show();
-
-        uploadImageToImgur(imageUri, new OnUploadSuccessListener() {
-            @Override
-            public void onSuccess(String imageUrl) {
-                progressDialog.dismiss();
-                saveAdToFirebase(adTitle, imageUrl);
-            }
-        }, new OnUploadFailureListener() {
-            @Override
-            public void onFailure(String errorMessage) {
-                progressDialog.dismiss();
-                Toast.makeText(PostAdActivity.this, "Lỗi tải ảnh: " + errorMessage, Toast.LENGTH_SHORT).show();
-            }
-        });
+    if (adTitle.isEmpty() || imageUri == null) {
+        Toast.makeText(this, "Vui lòng nhập tiêu đề và chọn hình ảnh!", Toast.LENGTH_SHORT).show();
+        return;
     }
+    ProgressDialog progressDialog = new ProgressDialog(this);
+    progressDialog.setMessage("Đang đăng tin...");
+    progressDialog.show();
 
+    // Giả sử uid đã có sẵn từ quá trình đăng nhập
+    String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(uid);
+
+    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            String userEmail = snapshot.child("email").getValue(String.class); // ✅ Lấy userEmail
+
+            if (imageUri != null) {
+                uploadImageToImgur(imageUri, (imageUrl) -> {
+                    saveAdToFirebase(adTitle, imageUrl, uid, userEmail); // Cập nhật URL ảnh vào TextView
+                    progressDialog.dismiss();
+                    Toast.makeText(PostAdActivity.this, "Đăng tin thành công!", Toast.LENGTH_SHORT).show();
+                    finish();
+                }, (errorMessage) -> {
+                    progressDialog.dismiss();
+                    Toast.makeText(PostAdActivity.this, "Lỗi khi tải ảnh: " + errorMessage, Toast.LENGTH_SHORT).show();
+                });
+            } else {
+                saveAdToFirebase(adTitle, "", uid, userEmail);
+                progressDialog.dismiss();
+                Toast.makeText(PostAdActivity.this, "Đăng tin thành công!", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            progressDialog.dismiss();
+            Toast.makeText(PostAdActivity.this, "Lỗi khi lấy thông tin người dùng!", Toast.LENGTH_SHORT).show();
+        }
+    });
+}
+    // Lưu thông tin bài đăng vào Firebase
+    private void saveAdToFirebase(String title,  String imageUrl, String uid, String userEmail) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Ads");
+        String adId = databaseReference.push().getKey(); // ✅ Tạo ID duy nhất cho bài đăng
+        long timestamp = System.currentTimeMillis(); // ✅ Lấy timestamp hiện tại
+        if (adId != null) {
+            HashMap<String, Object> postMap = new HashMap<>();
+            postMap.put("title", title);
+            postMap.put("adId", adId);
+            postMap.put("imageUrl", imageUrl);
+            postMap.put("timestamp", timestamp); // ✅ Thêm timestamp
+            postMap.put("uid", uid); // ✅ Thêm uid
+            postMap.put("userEmail", userEmail); // ✅ Thêm userEmail
+            Log.d("FirebaseSave", "Dữ liệu đang lưu: " + postMap.toString()); // Log dữ liệu trước khi lưu
+            databaseReference.child(adId).setValue(postMap)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("FirebaseSave", "Đăng bài thành công!");
+                        Toast.makeText(PostAdActivity.this, "Đăng tin thành công!", Toast.LENGTH_SHORT).show();
+                        // ✅ Quay lại danh sách bài đăng & làm mới GridView
+                        Intent intent = new Intent(PostAdActivity.this, HomeMekong.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                    })
+                    .addOnFailureListener(e -> Log.e("FirebaseSave", "Lỗi khi đăng bài: " + e.getMessage()));
+        }
+    }
     // ✅ Upload hình ảnh lên Imgur
     private void uploadImageToImgur(Uri imageUri, OnUploadSuccessListener successListener, OnUploadFailureListener failureListener) {
         try {
@@ -137,33 +188,26 @@ public class PostAdActivity extends AppCompatActivity {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
             int bytesRead;
-
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 baos.write(buffer, 0, bytesRead);
             }
-
             byte[] imageBytes = baos.toByteArray();
             String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-
             OkHttpClient client = new OkHttpClient();
-
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
                     .addFormDataPart("image", encodedImage)
                     .build();
-
             Request request = new Request.Builder()
                     .url("https://api.imgur.com/3/image")
                     .addHeader("Authorization", "Client-ID " + IMGUR_CLIENT_ID)
                     .post(requestBody)
                     .build();
-
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     runOnUiThread(() -> failureListener.onFailure(e.getMessage()));
                 }
-
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     if (response.isSuccessful() && response.body() != null) {
@@ -171,7 +215,6 @@ public class PostAdActivity extends AppCompatActivity {
                             String responseData = response.body().string();
                             JSONObject jsonObject = new JSONObject(responseData);
                             String imageUrl = jsonObject.getJSONObject("data").getString("link");
-
                             runOnUiThread(() -> successListener.onSuccess(imageUrl));
                         } catch (JSONException e) {
                             runOnUiThread(() -> failureListener.onFailure("Lỗi xử lý dữ liệu từ Imgur"));
@@ -181,28 +224,14 @@ public class PostAdActivity extends AppCompatActivity {
                     }
                 }
             });
-
         } catch (Exception e) {
             failureListener.onFailure(e.getMessage());
         }
     }
-
-    // ✅ Lưu thông tin quảng cáo vào Firebase Database
-    private void saveAdToFirebase(String title, String imageUrl) {
-        DatabaseReference adsRef = FirebaseDatabase.getInstance().getReference("Ads");
-        String adId = adsRef.push().getKey();
-        Ad ad = new Ad(adId, title, imageUrl);
-
-        adsRef.child(adId).setValue(ad)
-                .addOnSuccessListener(aVoid -> Toast.makeText(this, "Đăng quảng cáo thành công!", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(this, "Lỗi khi đăng quảng cáo!", Toast.LENGTH_SHORT).show());
-    }
-
     // ✅ Interfaces để xử lý kết quả upload
     interface OnUploadSuccessListener {
         void onSuccess(String imageUrl);
     }
-
     interface OnUploadFailureListener {
         void onFailure(String errorMessage);
     }

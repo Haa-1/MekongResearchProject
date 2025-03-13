@@ -24,6 +24,7 @@ import com.example.researchproject.Payment.OrderInformationActivity;
 import com.example.researchproject.R;
 import com.example.researchproject.ui.PostActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class PostDetailActivity extends AppCompatActivity {
         txtServiceInfo = findViewById(R.id.txtServiceInfo);
         txtPrice = findViewById(R.id.txtPrice);
         txtRentalTime = findViewById(R.id.txtRentalTime);
-        txtWelcome = findViewById(R.id.txtWelcome);
+//        txtWelcome = findViewById(R.id.txtWelcome);
         txtAddress = findViewById(R.id.txtAddress);
         txtContact = findViewById(R.id.txtContact);
         imgService = findViewById(R.id.imgService);
@@ -114,26 +115,44 @@ public class PostDetailActivity extends AppCompatActivity {
         Glide.with(this).load(imageUrl).into(imgService);
         // ✅ Add to Cart
         btnAddToCart.setOnClickListener(v -> {
-            String cartItemId = cartRef.push().getKey();
-            if (cartItemId != null) {
-                HashMap<String, Object> cartItem = new HashMap<>();
-                cartItem.put("postId", postId);
-                cartItem.put("title", title);
-                cartItem.put("price", price);
-                cartItem.put("imageUrl", imageUrl);
-                cartRef.child(cartItemId).setValue(cartItem)
-                        .addOnSuccessListener(aVoid ->
-                                Toast.makeText(PostDetailActivity.this, "Đã thêm vào giỏ hàng!", Toast.LENGTH_SHORT).show()
-                        )
-                        .addOnFailureListener(e ->
-                                Toast.makeText(PostDetailActivity.this, "Lỗi khi thêm vào giỏ hàng!", Toast.LENGTH_SHORT).show()
-                        );
-            }
+            // Giả sử uid đã có sẵn từ quá trình đăng nhập
+            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(uid);
+
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    String userEmail = snapshot.child("email").getValue(String.class); // ✅ Lấy userEmail
+                    String cartItemId = cartRef.push().getKey();
+                    if (cartItemId != null) {
+                        HashMap<String, Object> cartItem = new HashMap<>();
+                        cartItem.put("postId", postId);
+                        cartItem.put("title", title);
+                        cartItem.put("price", price);
+                        cartItem.put("imageUrl", imageUrl);
+                        cartItem.put("uid", uid); // ✅ Thêm uid vào giỏ hàng
+                        cartItem.put("userEmail", userEmail); // ✅ Thêm userEmail vào giỏ hàng
+
+                        cartRef.child(cartItemId).setValue(cartItem)
+                                .addOnSuccessListener(aVoid ->
+                                        Toast.makeText(PostDetailActivity.this, "Đã thêm vào giỏ hàng!", Toast.LENGTH_SHORT).show()
+                                )
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(PostDetailActivity.this, "Lỗi khi thêm vào giỏ hàng!", Toast.LENGTH_SHORT).show()
+                                );
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(PostDetailActivity.this, "Lỗi khi lấy thông tin người dùng!", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
+
         // ✅ Payment Button
         btnPay.setOnClickListener(v -> {
             Intent intent = new Intent(PostDetailActivity.this, OrderInformationActivity.class);
-
             intent.putExtra("postId", postId);
             intent.putExtra("title", title);
             intent.putExtra("price", price);

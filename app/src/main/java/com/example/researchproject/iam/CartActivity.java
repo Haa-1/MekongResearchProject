@@ -13,14 +13,15 @@ import com.example.researchproject.MekoAI;
 import com.example.researchproject.R;
 import com.example.researchproject.ui.PostActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
-
 public class CartActivity extends AppCompatActivity {
     private RecyclerView recyclerViewCart;
     private CartAdapter cartAdapter;
@@ -62,20 +63,27 @@ public class CartActivity extends AppCompatActivity {
         // Lấy danh sách sản phẩm trong giỏ hàng
         loadCartData();
     }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        loadCartData();
+    }
     private void loadCartData() {
-        cartRef.addValueEventListener(new ValueEventListener() {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        Query userCartQuery = cartRef.orderByChild("uid").equalTo(uid);
+        userCartQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 cartList.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    Post post = dataSnapshot.getValue(Post.class);
+                for (DataSnapshot cartSnapshot : snapshot.getChildren()) {
+                    Post post = cartSnapshot.getValue(Post.class);
                     cartList.add(post);
                 }
                 cartAdapter.notifyDataSetChanged();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(CartActivity.this, "Lỗi tải dữ liệu giỏ hàng!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CartActivity.this, "Lỗi khi lấy dữ liệu giỏ hàng!", Toast.LENGTH_SHORT).show();
             }
         });
     }

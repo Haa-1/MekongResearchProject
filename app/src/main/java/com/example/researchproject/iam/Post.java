@@ -2,12 +2,12 @@ package com.example.researchproject.iam;
 public class Post {
     private String title, serviceInfo, price, rentalTime, address, contact, imageUrl;
     private long timestamp; // ✅ Thêm timestamp
-    private String postId;
+    private String postId, userEmail;
     // Constructor mặc định (cần cho Firebase)
     public Post() {}
 
     // Constructor đầy đủ
-    public Post(String postId, String title, String serviceInfo, String price, String rentalTime, String address, String contact, String imageUrl,long timestamp) {
+    public Post(String postId, String title, String serviceInfo, String price, String rentalTime, String address, String contact, String imageUrl,long timestamp,String userEmail) {
         this.postId = postId;
         this.title = title;
         this.serviceInfo = serviceInfo;
@@ -17,6 +17,7 @@ public class Post {
         this.contact = contact;
         this.imageUrl = imageUrl;
         this.timestamp = timestamp;
+        this.userEmail=userEmail;
 
     }
     public String getPostId() { return postId; }
@@ -42,12 +43,17 @@ public class Post {
 
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
     // Getter và Setter cho timestamp
     public long getTimestamp() {
         return timestamp;
     }
-
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
+    public String getUserEmail() {
+        return userEmail;
+    }
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;}
 }

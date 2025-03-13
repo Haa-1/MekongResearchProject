@@ -36,10 +36,10 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     }
     @Override
     public void onBindViewHolder(@NonNull CartViewHolder holder, int position) {
+
         Post post = cartList.get(position);
         holder.txtTitle.setText(post.getTitle());
         holder.txtPrice.setText("Giá: " + post.getPrice() + " VND");
-
         Glide.with(context)
                 .load(post.getImageUrl())
                 .placeholder(R.drawable.search_icon)
@@ -62,6 +62,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                 context.startActivity(intent);
             }
         });
+
         // ✅ Xử lý nút Xóa
         holder.btnDelete.setOnClickListener(v -> {
             int currentPosition = holder.getAdapterPosition();
@@ -142,4 +143,5 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             btnPay = itemView.findViewById(R.id.btnPay);
         }
     }
+
 }

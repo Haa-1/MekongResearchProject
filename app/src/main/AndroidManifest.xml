@@ -20,6 +20,12 @@
         android:theme="@style/Theme.ResearchProject"
         tools:targetApi="31">
         <activity
+            android:name=".admin.EditAd"
+            android:exported="false" />
+        <activity
+            android:name=".admin.EditPost"
+            android:exported="false" />
+        <activity
             android:name=".admin.ManageAdsActivity"
             android:exported="false" />
         <activity

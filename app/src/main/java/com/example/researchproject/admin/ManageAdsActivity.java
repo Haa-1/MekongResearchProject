@@ -1,5 +1,4 @@
 package com.example.researchproject.admin;
-
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -11,8 +10,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.researchproject.R;
+import com.example.researchproject.iam.Ad;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,36 +23,31 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-
 public class ManageAdsActivity extends AppCompatActivity {
-    private ListView listViewAds;
-    private ArrayAdapter<String> adapter;
-    private List<String> adList;
+    private RecyclerView recyclerViewAds;
+    private AdsAdapter adapter;
+    private List<Ad> adList;
     private DatabaseReference adRef;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_ads);
-
-        listViewAds = findViewById(R.id.listViewAds);
+        recyclerViewAds = findViewById(R.id.recyclerViewAds);
+        recyclerViewAds.setLayoutManager(new LinearLayoutManager(this));
         adRef = FirebaseDatabase.getInstance().getReference("Ads");
         adList = new ArrayList<>();
-
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, adList);
-        listViewAds.setAdapter(adapter);
-
+        adapter = new AdsAdapter(this, adList);
+        recyclerViewAds.setAdapter(adapter);
         loadAds();
     }
-
     private void loadAds() {
         adRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 adList.clear();
                 for (DataSnapshot adSnapshot : snapshot.getChildren()) {
-                    String title = adSnapshot.child("title").getValue(String.class);
-                    adList.add(title);
+                    Ad ad = adSnapshot.getValue(Ad.class);
+                    adList.add(ad);
                 }
                 adapter.notifyDataSetChanged();
             }
@@ -61,3 +58,5 @@ public class ManageAdsActivity extends AppCompatActivity {
         });
     }
 }
+
+

@@ -30,6 +30,9 @@ import com.example.researchproject.iam.CartActivity;
 import com.example.researchproject.iam.PostAdActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import org.json.JSONObject;
@@ -65,9 +68,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.ValueEventListener;
 
 public class PostActivity extends AppCompatActivity {
-
     private EditText edtTitle, edtServiceInfo, edtPrice, edtRentalTime, edtAddress, edtContact;
     private Button  btnPost;
     private ImageView imgService;
@@ -83,7 +86,6 @@ public class PostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
-
         // Ánh xạ giao diện
         edtTitle = findViewById(R.id.edtTitle);
         edtServiceInfo = findViewById(R.id.edtServiceInfo);
@@ -96,23 +98,19 @@ public class PostActivity extends AppCompatActivity {
         btnUploadImage = findViewById(R.id.btnUploadImage);
         txtImageUrl = findViewById(R.id.txtImageUrl);
         Button btnPostAd = findViewById(R.id.btnPostAd);
-
         btnPostAd.setOnClickListener(v -> {
             Intent intent = new Intent(PostActivity.this, PostAdActivity.class);
             startActivity(intent);
         });
         btnUploadImage.setOnClickListener(v -> openFileChooser());
         btnUploadImage.setOnClickListener(v -> checkStoragePermission());
-
         databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-
         // Xử lý sự kiện khi chọn item trong menu
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int itemId = item.getItemId();
-
                 if (itemId == R.id.nav_home) {
                     startActivity(new Intent(PostActivity.this, HomeMekong.class));
                 } else if (itemId == R.id.nav_ai) {
@@ -139,13 +137,14 @@ public class PostActivity extends AppCompatActivity {
                 openFileChooser();
             }
         });
-        ZaloPaySDK.init(2553, Environment.SANDBOX);
-        StrictMode.ThreadPolicy policy = new
-                StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+//        ZaloPaySDK.init(2553, Environment.SANDBOX);
+//        StrictMode.ThreadPolicy policy = new
+//                StrictMode.ThreadPolicy.Builder().permitAll().build();
+//        StrictMode.setThreadPolicy(policy);
         // Xử lý đăng bài
        btnPost.setOnClickListener(v -> {
-           processZaloPayPayment();
+//           processZaloPayPayment();
+           uploadPost();
            });
     }
     private void openFileChooser() {
@@ -185,49 +184,7 @@ public class PostActivity extends AppCompatActivity {
             openFileChooser();
         }
     }
-    // Xử lý đăng bài
-    private void uploadPost() {
 
-        String title = edtTitle.getText().toString().trim();
-        String serviceInfo = edtServiceInfo.getText().toString().trim();
-        String price = edtPrice.getText().toString().trim();
-        String rentalTime = edtRentalTime.getText().toString().trim();
-        String address = edtAddress.getText().toString().trim();
-        String contact = edtContact.getText().toString().trim();
-
-        if (title.isEmpty() || serviceInfo.isEmpty() || price.isEmpty() || rentalTime.isEmpty() || address.isEmpty() || contact.isEmpty()) {
-            Toast.makeText(this, "Vui lòng điền đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Đang đăng tin...");
-        progressDialog.show();
-        if (imageUri != null) {
-            uploadImageToImgur(imageUri, (imageUrl) -> {
-                txtImageUrl.setText(imageUrl); // Cập nhật URL ảnh vào TextView
-                savePostToDatabase(title, serviceInfo, price, rentalTime, address, contact, imageUrl);
-                progressDialog.dismiss();
-                Toast.makeText(PostActivity.this, "Đăng tin thành công!", Toast.LENGTH_SHORT).show();
-                finish();
-            }, (errorMessage) -> {
-                progressDialog.dismiss();
-                Toast.makeText(PostActivity.this, "Lỗi khi tải ảnh: " + errorMessage, Toast.LENGTH_SHORT).show();
-            });
-        } else {
-            savePostToDatabase(title, serviceInfo, price, rentalTime, address, contact, "");
-            progressDialog.dismiss();
-            Toast.makeText(this, "Đăng tin thành công!", Toast.LENGTH_SHORT).show();
-            finish();
-        }
-        progressDialog.dismiss();
-        Toast.makeText(this, "Đăng tin thành công!", Toast.LENGTH_SHORT).show();
-
-// Quay lại danh sách bài đăng và làm mới RecyclerView
-        Intent intent = new Intent(PostActivity.this, HomeMekong.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
-    }
     // Upload ảnh lên Imgur
     private void uploadImageToImgur(Uri imageUri, OnUploadSuccessListener successListener, OnUploadFailureListener failureListener) {
         try {
@@ -274,8 +231,60 @@ public class PostActivity extends AppCompatActivity {
             failureListener.onFailure(e.getMessage());
         }
     }
+    // Xử lý đăng bài
+    private void uploadPost() {
+        String title = edtTitle.getText().toString().trim();
+        String serviceInfo = edtServiceInfo.getText().toString().trim();
+        String price = edtPrice.getText().toString().trim();
+        String rentalTime = edtRentalTime.getText().toString().trim();
+        String address = edtAddress.getText().toString().trim();
+        String contact = edtContact.getText().toString().trim();
+        if (title.isEmpty() || serviceInfo.isEmpty() || price.isEmpty() || rentalTime.isEmpty() || address.isEmpty() || contact.isEmpty()) {
+            Toast.makeText(this, "Vui lòng điền đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Đang đăng tin...");
+        progressDialog.show();
+
+        // Giả sử uid đã có sẵn từ quá trình đăng nhập
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(uid);
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String userEmail = snapshot.child("email").getValue(String.class); // ✅ Lấy userEmail
+
+                if (imageUri != null) {
+                    uploadImageToImgur(imageUri, (imageUrl) -> {
+                        txtImageUrl.setText(imageUrl); // Cập nhật URL ảnh vào TextView
+                        savePostToDatabase(title, serviceInfo, price, rentalTime, address, contact, imageUrl, uid, userEmail);
+                        progressDialog.dismiss();
+                        Toast.makeText(PostActivity.this, "Đăng tin thành công!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }, (errorMessage) -> {
+                        progressDialog.dismiss();
+                        Toast.makeText(PostActivity.this, "Lỗi khi tải ảnh: " + errorMessage, Toast.LENGTH_SHORT).show();
+                    });
+                } else {
+                    savePostToDatabase(title, serviceInfo, price, rentalTime, address, contact, "", uid, userEmail);
+                    progressDialog.dismiss();
+                    Toast.makeText(PostActivity.this, "Đăng tin thành công!", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                progressDialog.dismiss();
+                Toast.makeText(PostActivity.this, "Lỗi khi lấy thông tin người dùng: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     // Lưu thông tin bài đăng vào Firebase
-    private void savePostToDatabase(String title, String serviceInfo, String price, String rentalTime, String address, String contact, String imageUrl) {
+    private void savePostToDatabase(String title, String serviceInfo, String price, String rentalTime, String address, String contact, String imageUrl, String uid, String userEmail) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
         String postId = databaseReference.push().getKey(); // ✅ Tạo ID duy nhất cho bài đăng
         long timestamp = System.currentTimeMillis(); // ✅ Lấy timestamp hiện tại
@@ -291,6 +300,8 @@ public class PostActivity extends AppCompatActivity {
             postMap.put("contact", contact);
             postMap.put("imageUrl", imageUrl);
             postMap.put("timestamp", timestamp); // ✅ Thêm timestamp
+            postMap.put("uid", uid); // ✅ Thêm uid
+            postMap.put("userEmail", userEmail); // ✅ Thêm userEmail
 
             Log.d("FirebaseSave", "Dữ liệu đang lưu: " + postMap.toString()); // Log dữ liệu trước khi lưu
 
@@ -309,6 +320,7 @@ public class PostActivity extends AppCompatActivity {
         }
     }
 
+
     // Interfaces để xử lý callback khi upload ảnh
     interface OnUploadSuccessListener {
         void onSuccess(String imageUrl);
@@ -317,50 +329,50 @@ public class PostActivity extends AppCompatActivity {
         void onFailure(String errorMessage);
     }
 
-    private void processZaloPayPayment() {
-        Toast.makeText(this, "Đang thực hiện thanh toán qua ZaloPay...", Toast.LENGTH_SHORT).show();
-        String totalString = "100000";
-        try {
-            CreateOrder orderApi = new CreateOrder();
-            JSONObject data = orderApi.createOrder(totalString);
-            String code = data.getString("return_code");
-            Log.d("ZaloPay", "Phản hồi từ API: " + data.toString());
-            if (code.equals("1")) {
-                String token = data.getString("zp_trans_token");
-                Log.d("ZaloPay", "Mã giao dịch: " + token);
-                int i;
-                ZaloPaySDK.getInstance().payOrder(PostActivity.this, token, "demozpdk://app", new PayOrderListener() {
-                    @Override
-                    public void onPaymentSucceeded(String s, String s1, String s2) {
-                        Log.d("ZaloPay", "Thanh toán thành công: " + s);
-                        Toast.makeText(PostActivity.this, "Thanh toán thành công! Đang đăng bài...", Toast.LENGTH_SHORT).show();
-                        Log.d("PostActivity", "uploadPost() được gọi sau khi thanh toán thành công.");
-                        int i=1;
-                    }
-
-                    @Override
-                    public void onPaymentCanceled(String s, String s1) {
-                        Intent intent1 = new Intent(PostActivity.this, HomeMekong.class);
-                        intent1.putExtra("result", "Hủy thanh toán");
-                        startActivity(intent1);
-                        int i=2;
-                    }
-                    @Override
-                    public void onPaymentError(ZaloPayError zaloPayError, String s, String s1) {
-                        Intent intent1 = new Intent(PostActivity.this, HomeMekong.class);
-                        intent1.putExtra("result", "Lỗi thanh toán");
-                        startActivity(intent1);
-                    }
-                });
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Lỗi khi tạo đơn hàng: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        ZaloPaySDK.getInstance().onResult(intent);
-    }
+//    private void processZaloPayPayment() {
+//        Toast.makeText(this, "Đang thực hiện thanh toán qua ZaloPay...", Toast.LENGTH_SHORT).show();
+//        String totalString = "100000";
+//        try {
+//            CreateOrder orderApi = new CreateOrder();
+//            JSONObject data = orderApi.createOrder(totalString);
+//            String code = data.getString("return_code");
+//            Log.d("ZaloPay", "Phản hồi từ API: " + data.toString());
+//            if (code.equals("1")) {
+//                String token = data.getString("zp_trans_token");
+//                Log.d("ZaloPay", "Mã giao dịch: " + token);
+//                int i;
+//                ZaloPaySDK.getInstance().payOrder(PostActivity.this, token, "demozpdk://app", new PayOrderListener() {
+//                    @Override
+//                    public void onPaymentSucceeded(String s, String s1, String s2) {
+//                        Log.d("ZaloPay", "Thanh toán thành công: " + s);
+//                        Toast.makeText(PostActivity.this, "Thanh toán thành công! Đang đăng bài...", Toast.LENGTH_SHORT).show();
+//                        Log.d("PostActivity", "uploadPost() được gọi sau khi thanh toán thành công.");
+//                        int i=1;
+//                    }
+//
+//                    @Override
+//                    public void onPaymentCanceled(String s, String s1) {
+//                        Intent intent1 = new Intent(PostActivity.this, HomeMekong.class);
+//                        intent1.putExtra("result", "Hủy thanh toán");
+//                        startActivity(intent1);
+//                        int i=2;
+//                    }
+//                    @Override
+//                    public void onPaymentError(ZaloPayError zaloPayError, String s, String s1) {
+//                        Intent intent1 = new Intent(PostActivity.this, HomeMekong.class);
+//                        intent1.putExtra("result", "Lỗi thanh toán");
+//                        startActivity(intent1);
+//                    }
+//                });
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            Toast.makeText(this, "Lỗi khi tạo đơn hàng: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+//        }
+//    }
+//    @Override
+//    protected void onNewIntent(Intent intent) {
+//        super.onNewIntent(intent);
+//        ZaloPaySDK.getInstance().onResult(intent);
+//    }
 }
