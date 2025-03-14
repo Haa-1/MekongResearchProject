@@ -2,8 +2,10 @@ package com.example.researchproject.Payment;
 
 import static java.lang.String.valueOf;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.text.Editable;
@@ -20,6 +22,9 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -166,7 +171,7 @@ public class OrderInformationActivity extends AppCompatActivity implements Order
         for (OrderItem item : orderItems) {
             totalPrice += item.getPrice() * item.getQuantity() * rentalPeriod;
         }
-        txtTotal.setText(String.format("%.3f VNĐ", totalPrice));
+        txtTotal.setText(String.format("%.0f VNĐ", totalPrice));
 
     }
 
@@ -196,6 +201,7 @@ public class OrderInformationActivity extends AppCompatActivity implements Order
                         Log.d("Zalo","Ma giao dich"+token);
                         Log.d("Zalo","return-code"+ code);
 
+                        showOrderSuccessNotification();
 
                         Intent intent1 = new Intent(OrderInformationActivity.this, OrderSuccessfulActivity.class);
                         intent1.putExtra("customerName", customerName);
@@ -243,6 +249,9 @@ public class OrderInformationActivity extends AppCompatActivity implements Order
         String quantity = String.valueOf(orderItems.get(0).getQuantity());
         String postId = getIntent().getStringExtra("postId");
 
+        long timestamp = System.currentTimeMillis();
+
+
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Order_History");
         String orderId = databaseReference.child(userId).push().getKey();
@@ -254,11 +263,28 @@ public class OrderInformationActivity extends AppCompatActivity implements Order
         orderHistory.put("orderId", orderId);
         orderHistory.put("quantity",quantity);
         orderHistory.put("totalPrice", totalPrice);
+        orderHistory.put("timestamp", timestamp);
         orderHistory.put("postId", postId);
         databaseReference.child(userId).child(orderId).setValue(orderHistory)
                 .addOnSuccessListener(aVoid -> Log.d("Firebase", "Giao dịch được lưu thành công"))
                 .addOnFailureListener(e -> Log.e("Firebase", "Lỗi khi lưu giao dịch", e));
     }
+    private void showOrderSuccessNotification() {
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "order_channel")
+                .setSmallIcon(R.drawable.ic_send) // Thay bằng icon của bạn trong res/drawable
+                .setContentTitle("Đặt hàng thành công")
+                .setContentText("Cảm ơn bạn đã đặt hàng! Đơn hàng của bạn đang được xử lý.")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        notificationManager.notify(1002, builder.build());
+    }
+
     private void showExitConfirmationDialog() {
         new androidx.appcompat.app.AlertDialog.Builder(this)
                 .setTitle("Khách hàng chưa thanh toán, vui lòng thanh toán!")

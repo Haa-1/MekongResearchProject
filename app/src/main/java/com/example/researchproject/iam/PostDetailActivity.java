@@ -160,32 +160,32 @@ public class PostDetailActivity extends AppCompatActivity {
             startActivity(intent);
         });
         // ✅ Submit Review
-        btnSubmitReview.setOnClickListener(v -> {
-            String reviewText = edtReview.getText().toString().trim();
-            float rating = ratingBar.getRating();
-
-            if (TextUtils.isEmpty(reviewText) || rating == 0) {
-                Toast.makeText(this, "Vui lòng nhập đánh giá & chọn số sao!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            // 🔥 Save Review to Firebase
-            String reviewId = reviewsRef.push().getKey();
-            if (reviewId != null) {
-                HashMap<String, Object> reviewMap = new HashMap<>();
-                reviewMap.put("user", "Người dùng ẩn danh");
-                reviewMap.put("rating", rating);
-                reviewMap.put("comment", reviewText);
-                reviewsRef.child(reviewId).setValue(reviewMap)
-                        .addOnSuccessListener(aVoid -> {
-                            Toast.makeText(this, "Đánh giá đã gửi!", Toast.LENGTH_SHORT).show();
-                            edtReview.setText("");
-                            ratingBar.setRating(0);
-                        })
-                        .addOnFailureListener(e ->
-                                Toast.makeText(this, "Lỗi khi gửi đánh giá!", Toast.LENGTH_SHORT).show()
-                        );
-            }
-        });
+//        btnSubmitReview.setOnClickListener(v -> {
+//            String reviewText = edtReview.getText().toString().trim();
+//            float rating = ratingBar.getRating();
+//
+//            if (TextUtils.isEmpty(reviewText) || rating == 0) {
+//                Toast.makeText(this, "Vui lòng nhập đánh giá & chọn số sao!", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//            // 🔥 Save Review to Firebase
+//            String reviewId = reviewsRef.push().getKey();
+//            if (reviewId != null) {
+//                HashMap<String, Object> reviewMap = new HashMap<>();
+//                reviewMap.put("user", "Người dùng ẩn danh");
+//                reviewMap.put("rating", rating);
+//                reviewMap.put("comment", reviewText);
+//                reviewsRef.child(reviewId).setValue(reviewMap)
+//                        .addOnSuccessListener(aVoid -> {
+//                            Toast.makeText(this, "Đánh giá đã gửi!", Toast.LENGTH_SHORT).show();
+//                            edtReview.setText("");
+//                            ratingBar.setRating(0);
+//                        })
+//                        .addOnFailureListener(e ->
+//                                Toast.makeText(this, "Lỗi khi gửi đánh giá!", Toast.LENGTH_SHORT).show()
+//                        );
+//            }
+//        });
         // ✅ Load Reviews
         loadReviews();
     }

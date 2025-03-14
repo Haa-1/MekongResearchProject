@@ -142,10 +142,10 @@ public class PostActivity extends AppCompatActivity {
 //                StrictMode.ThreadPolicy.Builder().permitAll().build();
 //        StrictMode.setThreadPolicy(policy);
         // Xử lý đăng bài
-       btnPost.setOnClickListener(v -> {
+        btnPost.setOnClickListener(v -> {
 //           processZaloPayPayment();
-           uploadPost();
-           });
+            uploadPost();
+        });
     }
     private void openFileChooser() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);

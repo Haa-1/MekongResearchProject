@@ -5,14 +5,19 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="10dp">
+
     <TextView
         android:id="@+id/textView13"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Chi Tiet Don Hang"
+        android:layout_width="424dp"
+        android:layout_height="42dp"
         android:layout_gravity="center"
-        android:textSize="20sp"
-        android:gravity="center"/>
+        android:layout_marginBottom="15dp"
+        android:background="#9CCFE6"
+        android:gravity="center"
+        android:text="Chi Tiet Don Hang"
+        android:textColor="#F6F7F8"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -27,25 +32,35 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Thông tin khách hàng:" />
+                android:text="Thông tin khách hàng:"
+                android:textColor="#1569AB"
+                android:textStyle="bold"
+                android:textSize="18sp"/>
 
             <TextView
                 android:id="@+id/txtCustomerName_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Nguyen Van A" />
+                android:text="Nguyen Van A"
+                android:textColor="#1569AB"
+
+                android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/txtCustomerAddress_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Dia chi:" />
+                android:text="Dia chi:"
+                android:textColor="#1569AB"
+                android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/txtCustomerPhone_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Phone" />
+                android:text="Phone"
+                android:textColor="#1569AB"
+                android:textSize="14sp"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -62,20 +77,27 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Thong tin san pham:" />
+                android:text="Thong tin san pham:"
+                android:textColor="#1569AB"
+                android:textStyle="bold"
+                android:textSize="18sp"/>
 
 
             <TextView
                 android:id="@+id/txtAddress_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Dia chi:" />
+                android:text="Dia chi:"
+                android:textColor="#1569AB"
+                android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/txtPhone_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Phone" />
+                android:text="Phone"
+                android:textColor="#1569AB"
+                android:textSize="14sp"          />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -248,6 +270,15 @@
             android:src="@drawable/ic_send"
             android:contentDescription="Gửi đánh giá"/>
     </LinearLayout>
+    <TextView
+        android:id="@+id/txtYourReview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ddd"
+        android:textColor="#1569AB"
+        android:layout_gravity="center"
+        android:gravity="center"
+        />
 
 
 

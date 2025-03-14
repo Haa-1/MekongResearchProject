@@ -1,5 +1,7 @@
 package com.example.researchproject;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -16,9 +18,14 @@ import android.widget.Toast;
 import android.widget.SearchView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.researchproject.Notification.AdNotificationService;
+import com.example.researchproject.Notification.OrderNotificationService;
+import com.example.researchproject.Notification.PostNotificationService;
 import com.example.researchproject.iam.Ad;
 import com.example.researchproject.iam.AdSliderAdapter;
 import com.example.researchproject.iam.CartActivity;
@@ -36,6 +43,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -73,6 +81,9 @@ public class HomeMekong extends AppCompatActivity {
     private List<Ad> adList;
     private DatabaseReference adsRef;
     private TabLayout tabDots;
+
+    private static final int NOTIFICATION_PERMISSION_CODE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -160,6 +171,35 @@ public class HomeMekong extends AppCompatActivity {
             }
             return true;
         });
+
+        //Yêu cầu quyền thông báo
+        requestNotificationPermission();
+        //Thong bao khi co bai viet tu nguoi khac
+        new PostNotificationService(this);
+        //Thông báo khi có người đặt đơn hàng từ bài viết của bạn
+        new OrderNotificationService(this);
+        //Thông báo khi có qc mới
+        new AdNotificationService(this);
+
+    }
+    // ✅ Yêu cầu quyền thông báo
+    private void requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, NOTIFICATION_PERMISSION_CODE);
+            }
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == NOTIFICATION_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Quyền thông báo đã được cấp!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Bạn cần cấp quyền để nhận thông báo!", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
     // ✅ Lấy dữ liệu để tạo gợi ý tìm kiếm & đảm bảo bài mới nhất lên đầu
     private void loadSearchSuggestions() {
@@ -178,7 +218,6 @@ public class HomeMekong extends AppCompatActivity {
                         uniqueSuggestions.add(post.getServiceInfo());
                     }
                 }
-
                 // ✅ Sắp xếp danh sách theo timestamp giảm dần (bài mới nhất lên đầu)
                 tempList.sort((p1, p2) -> Long.compare(p2.getTimestamp(), p1.getTimestamp()));
 

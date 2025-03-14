@@ -11,11 +11,15 @@
 
     <TextView
         android:id="@+id/textView12"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Lịch Sử Đặt Hàng"
+        android:textColor="#F6F7F8"
+        android:background="#9CCFE6"
         android:textSize="24sp"
-        android:gravity="center"/>
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="15dp"/>
 
 
     <androidx.recyclerview.widget.RecyclerView

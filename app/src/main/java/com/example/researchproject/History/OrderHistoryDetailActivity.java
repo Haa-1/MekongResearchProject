@@ -2,8 +2,13 @@ package com.example.researchproject.History;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,11 +30,17 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.HashMap;
+
 public class OrderHistoryDetailActivity extends AppCompatActivity {
 
 
     private TextView txtCustomerName, txtCustomerAddress, txtCustomerPhone, txtQuantity, txtTotalPrice,txtRentalPeriod, txtProductName, txtPrice,txtProductAddress, txtProductPhone;
     private ImageView imgProduct;
+    private DatabaseReference reviewsRef;
+    private EditText edtReview;
+    private ImageButton btnSubmitReview;
+    private RatingBar ratingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +59,9 @@ public class OrderHistoryDetailActivity extends AppCompatActivity {
         txtRentalPeriod = findViewById(R.id.txtRentalPeriod_detail);
         txtProductAddress = findViewById(R.id.txtAddress_detail);
         txtProductPhone = findViewById(R.id.txtPhone_detail);
+        edtReview = findViewById(R.id.edtReview);
+        btnSubmitReview = findViewById(R.id.btnSubmitReview);
+        ratingBar = findViewById(R.id.ratingBar);
 
         Intent intent = getIntent();
         String orderId = intent.getStringExtra("orderId");
@@ -58,6 +72,41 @@ public class OrderHistoryDetailActivity extends AppCompatActivity {
             return;
         }
         loadOrderDetails(orderId);
+
+        reviewsRef = FirebaseDatabase.getInstance().getReference("Reviews").child(orderId);
+
+        btnSubmitReview.setOnClickListener(v -> {
+            String reviewText = edtReview.getText().toString().trim();
+            float rating = ratingBar.getRating();
+
+            if (TextUtils.isEmpty(reviewText) || rating == 0) {
+                Toast.makeText(this, "Vui lòng nhập đánh giá & chọn số sao!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            // 🔥 Save Review to Firebase
+            String reviewId = reviewsRef.push().getKey();
+            if (reviewId != null) {
+                HashMap<String, Object> reviewMap = new HashMap<>();
+                reviewMap.put("user", "Người dùng ẩn danh");
+                reviewMap.put("rating", rating);
+                reviewMap.put("comment", reviewText);
+                reviewsRef.child(reviewId).setValue(reviewMap)
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(this, "Đánh giá đã gửi!", Toast.LENGTH_SHORT).show();
+                            edtReview.setText("");
+                            ratingBar.setRating(0);
+                        })
+                        .addOnFailureListener(e ->
+                                Toast.makeText(this, "Lỗi khi gửi đánh giá!", Toast.LENGTH_SHORT).show()
+                        );
+
+                loadYourReview();
+            }
+        });
+
+    }
+    private void loadYourReview(){
+
     }
     private void loadOrderDetails(String orderId) {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -70,7 +119,6 @@ public class OrderHistoryDetailActivity extends AppCompatActivity {
                     finish();
                     return;
                 }
-
                 Log.d("DEBUG", "Snapshot: " + snapshot.getValue());
 
                 String customerName = snapshot.child("customerName").getValue(String.class);
@@ -115,7 +163,6 @@ public class OrderHistoryDetailActivity extends AppCompatActivity {
                     Toast.makeText(OrderHistoryDetailActivity.this, "Không tìm thấy sản phẩm", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 String title = snapshot.child("title").getValue(String.class);
                 String price = snapshot.child("price").getValue(String.class);
                 String address = snapshot.child("address").getValue(String.class);
@@ -133,7 +180,6 @@ public class OrderHistoryDetailActivity extends AppCompatActivity {
                         .error(R.drawable.search_icon)
                         .into(imgProduct);
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(OrderHistoryDetailActivity.this, "Lỗi tải dữ liệu sản phẩm", Toast.LENGTH_SHORT).show();
