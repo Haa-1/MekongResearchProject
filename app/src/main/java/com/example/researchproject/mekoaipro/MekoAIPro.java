@@ -43,7 +43,7 @@ public class MekoAIPro extends AppCompatActivity {
     private EditText inputMessage;
     private ImageButton sendButton;
     private final OkHttpClient client = new OkHttpClient();
-    private static final String OPENAI_API_KEY = "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";  // Thay bằng API Key mới
+//    private static final String OPENAI_API_KEY = "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";  // Thay bằng API Key mới
     // Firebase
     private DatabaseReference chatHistoryRef;
     private String uid;
@@ -154,7 +154,7 @@ public class MekoAIPro extends AppCompatActivity {
             currentMessage.put("content", question);
             messages.put(currentMessage);
             // Gửi toàn bộ đoạn hội thoại tới API
-            jsonObject.put("model", "ft:gpt-3.5-turbo-0125:mekonggo::BCSQUKn6");
+//            jsonObject.put("model", "ft:gpt-3.5-turbo-0125:mekonggo::BCSQUKn6");
             jsonObject.put("messages", messages);
             jsonObject.put("max_tokens", 150); // Tăng token nếu cần phản hồi dài hơn
         } catch (Exception e) {
