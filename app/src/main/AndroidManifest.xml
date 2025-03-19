@@ -19,9 +19,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ResearchProject"
         tools:targetApi="31">
-        <activity android:name=".History.OrderHistoryDetailActivity"
+        <activity
+            android:name=".mekoaipro.MekoAIPro"
             android:exported="false" />
-        <activity android:name=".History.OrderHistoryActivity"
+        <activity
+            android:name=".MekoAIPro"
+            android:exported="false" />
+        <activity
+            android:name=".History.OrderHistoryDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".History.OrderHistoryActivity"
             android:exported="false" />
         <activity
             android:name=".admin.EditAd"

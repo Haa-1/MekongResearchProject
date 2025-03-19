@@ -7,15 +7,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import com.example.researchproject.History.OrderHistoryActivity;
 import com.example.researchproject.databinding.ActivityInformationBinding;
 import com.example.researchproject.iam.CartActivity;
 import com.example.researchproject.iam.LoginActivity;
+import com.example.researchproject.mekoaipro.MekoAIPro;
 import com.example.researchproject.ui.PostActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,7 +20,7 @@ public class InformationActivity extends AppCompatActivity {
     TextView tv_profile;
     private ActivityInformationBinding binding;
     private FirebaseAuth mAuth;
-    private Button  btnLogout, btnHistoryOrder;
+    private Button  btnLogout, btnHistoryOrder,btnMekoAIPro;
     BottomNavigationView bottomNavigationView;
     private TextView txtWelcome;
     @Override
@@ -39,6 +36,7 @@ public class InformationActivity extends AppCompatActivity {
         String userEmail = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getEmail() : "User";
         txtWelcome.setText("Email:  " + userEmail );
         btnLogout = findViewById(R.id.btnLogout);
+        btnMekoAIPro=findViewById(R.id.btnMekoAIPro);
         btnHistoryOrder = findViewById(R.id.btnHistoryOrder);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         // Xử lý sự kiện khi chọn item trong menu
@@ -68,6 +66,10 @@ public class InformationActivity extends AppCompatActivity {
             startActivity(new Intent(InformationActivity.this, LoginActivity.class));
             finish();
         });
+        btnMekoAIPro.setOnClickListener(v-> {
+            startActivity(new Intent(InformationActivity.this, MekoAIPro.class));
+        });
+
         btnHistoryOrder.setOnClickListener(v -> {
             startActivity(new Intent(InformationActivity.this, OrderHistoryActivity.class));
         });

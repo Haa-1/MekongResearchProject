@@ -38,12 +38,20 @@
                     android:text="Chào mừng!"
                     android:textSize="20sp"
                     android:layout_marginBottom="5dp" />
-
+                <Button
+                    android:id="@+id/btnMekoAIPro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#648BB3"
+                    android:textColor="#FFFFFF"
+                    android:text="MekoAIPro" />
                 <Button
                     android:id="@+id/btnHistoryOrder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Lich su dat hang" />
+                    android:backgroundTint="#648BB3"
+                    android:textColor="#FFFFFF"
+                    android:text="Lịch sử đặt hàng" />
 
                 <Button
                     android:id="@+id/btnLogout"
