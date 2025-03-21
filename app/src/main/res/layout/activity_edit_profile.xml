@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <!-- Ảnh đại diện -->
+        <ImageView
+            android:id="@+id/img_profile"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:scaleType="centerCrop"
+            android:src="@android:drawable/ic_menu_gallery"
+            android:background="@drawable/circle_background"/>
+
+        <!-- Nút chọn ảnh -->
+        <ImageButton
+            android:id="@+id/btn_upload"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="-30dp"
+            android:src="@drawable/upload_icon"/>
+
+        <!-- Ô nhập thông tin -->
+        <EditText
+            android:id="@+id/et_nickname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nhập tên hiển thị"
+            android:padding="12dp"
+            android:background="@drawable/edit_text_border"/>
+
+        <EditText
+            android:id="@+id/et_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Số điện thoại"
+            android:padding="12dp"
+            android:background="@drawable/edit_text_border"/>
+
+        <EditText
+            android:id="@+id/et_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:padding="12dp"
+            android:background="@drawable/edit_text_border"/>
+
+        <EditText
+            android:id="@+id/et_facebook"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Facebook"
+            android:padding="12dp"
+            android:background="@drawable/edit_text_border"/>
+
+        <EditText
+            android:id="@+id/et_google"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Google"
+            android:padding="12dp"
+            android:background="@drawable/edit_text_border"/>
+
+        <!-- Nút lưu -->
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lưu thay đổi"
+
+            android:textColor="@android:color/white"
+            android:padding="12dp"
+            android:textSize="16sp"/>
+    </LinearLayout>
+</ScrollView>

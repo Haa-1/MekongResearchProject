@@ -171,7 +171,7 @@ public class OrderInformationActivity extends AppCompatActivity implements Order
         for (OrderItem item : orderItems) {
             totalPrice += item.getPrice() * item.getQuantity() * rentalPeriod;
         }
-        txtTotal.setText(String.format("%.0f VNĐ", totalPrice));
+        txtTotal.setText(String.format("%.2f VNĐ", totalPrice));
 
     }
 

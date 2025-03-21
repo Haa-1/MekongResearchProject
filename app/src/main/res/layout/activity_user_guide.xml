@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:background="?attr/colorPrimaryDark">
+
+        <TextView
+            android:id="@+id/tv_user_guide_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="HƯỚNG DẪN SỬ DỤNG ỨNG DỤNG MEKONGGO
+"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"/>
+    </LinearLayout>
+
+    <!-- Danh sách tiêu đề -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btn_user_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1. Hướng dẫn chung " />
+
+            <Button
+                android:id="@+id/btn_security"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2. Hướng dẫn đặt xe" />
+
+            <Button
+                android:id="@+id/btn_notifications"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="3. Hướng dẫn thanh toán" />
+
+            <Button
+                android:id="@+id/btn_help"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="4. Quy chế hoạt động" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
