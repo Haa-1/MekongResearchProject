@@ -24,6 +24,17 @@
                 android:textStyle="bold"
                 android:gravity="center"
                 android:layout_marginBottom="5dp" />
+
+            <Button
+                android:id="@+id/btnDeleteAll"
+                android:layout_width="123dp"
+                android:layout_height="37dp"
+                android:backgroundTint="@android:color/white"
+                android:text="Xóa tất cả"
+                android:textColor="#0D838E"
+                android:layout_gravity="right"/>
+
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewNotification"
                 android:layout_width="match_parent"

@@ -90,4 +90,15 @@ public class NotificationActivity extends AppCompatActivity {
             }
         });
     }
+    private void deleteAllNotifications() {
+        notificationsRef.removeValue()
+                .addOnSuccessListener(aVoid -> {
+                    notificationList.clear();
+                    adapter.notifyDataSetChanged();
+                    Toast.makeText(NotificationActivity.this, "Đã xóa tất cả thông báo!", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(NotificationActivity.this, "Lỗi khi xóa thông báo!", Toast.LENGTH_SHORT).show()
+                );
+    }
 }

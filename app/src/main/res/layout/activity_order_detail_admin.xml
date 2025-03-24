@@ -8,10 +8,9 @@
 
     <TextView
         android:id="@+id/textView13"
-        android:layout_width="424dp"
+        android:layout_width="416dp"
         android:layout_height="42dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="15dp"
         android:background="#9CCFE6"
         android:gravity="center"
         android:text="Chi Tiet Don Hang"
@@ -21,8 +20,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="96dp"
-        >
+        android:layout_height="96dp">
 
         <LinearLayout
             android:layout_width="391dp"
@@ -32,35 +30,25 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Thông tin khách hàng:"
-                android:textColor="#1569AB"
-                android:textStyle="bold"
-                android:textSize="18sp"/>
+                android:text="Nguoi nhan:" />
 
             <TextView
-                android:id="@+id/txtCustomerName_detail"
+                android:id="@+id/txtCustomerName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Nguyen Van A"
-                android:textColor="#1569AB"
-
-                android:textSize="14sp"/>
+                android:text="Nguyen Van A" />
 
             <TextView
-                android:id="@+id/txtCustomerAddress_detail"
+                android:id="@+id/txtCusAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Dia chi:"
-                android:textColor="#1569AB"
-                android:textSize="14sp"/>
+                android:text="Dia chi:" />
 
             <TextView
-                android:id="@+id/txtCustomerPhone_detail"
+                android:id="@+id/txtCustomerPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Phone"
-                android:textColor="#1569AB"
-                android:textSize="14sp"/>
+                android:text="Phone" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -77,27 +65,19 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Thong tin san pham:"
-                android:textColor="#1569AB"
-                android:textStyle="bold"
-                android:textSize="18sp"/>
-
+                android:text="Thong tin san pham:" />
 
             <TextView
-                android:id="@+id/txtAddress_detail"
+                android:id="@+id/txtAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Dia chi:"
-                android:textColor="#1569AB"
-                android:textSize="14sp"/>
+                android:text="Dia chi:" />
 
             <TextView
-                android:id="@+id/txtPhone_detail"
+                android:id="@+id/txtPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Phone"
-                android:textColor="#1569AB"
-                android:textSize="14sp"          />
+                android:text="Phone" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -111,23 +91,22 @@
 
 
             <ImageView
-                android:id="@+id/imageView_detail"
+                android:id="@+id/imageView"
                 android:layout_width="5dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/search_icon" />
-
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:layout_weight="3.2"
-                android:background="@drawable/edit_text_border"
                 android:orientation="vertical"
-                android:paddingStart="10dp">
+                android:background="@drawable/edit_text_border"
+                android:paddingStart="10dp"
+                android:layout_gravity="center">
 
                 <TextView
-                    android:id="@+id/txtTitle_detail"
+                    android:id="@+id/txtTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Tên dịch vụ"
@@ -136,12 +115,12 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/txtPrice_detail"
+                    android:id="@+id/txtPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Giá: 0 VND"
-                    android:textColor="#FF5722"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textColor="#FF5722" />
 
             </LinearLayout>
         </LinearLayout>
@@ -162,7 +141,7 @@
                 android:text="So luong" />
 
             <TextView
-                android:id="@+id/txtQuantity_detail"
+                android:id="@+id/txtQuantity"
                 android:layout_width="122dp"
                 android:layout_height="match_parent"
                 android:text="So luong"
@@ -181,7 +160,7 @@
                 android:text="Thời gian thuê: " />
 
             <TextView
-                android:id="@+id/txtRentalPeriod_detail"
+                android:id="@+id/txtRentalPeriod"
                 android:layout_width="122dp"
                 android:layout_height="match_parent"
                 android:text="So luong"
@@ -197,91 +176,18 @@
             <TextView
                 android:layout_width="151dp"
                 android:layout_height="match_parent"
-                android:text="Tổng tiền: " />
+                android:text="Tong tien: " />
 
             <TextView
-                android:id="@+id/txtTotal_detail"
+                android:id="@+id/txtTotal"
                 android:layout_width="122dp"
                 android:layout_height="match_parent"
                 android:text="So luong"
                 android:layout_gravity="right"
-                android:gravity="right"/>
+                android:gravity="right"
+                android:textSize="20dp"
+                android:textStyle="bold"/>
 
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Đánh giá dịch vụ:"
-                android:textColor="#1569AB"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <RatingBar
-                android:id="@+id/ratingBar"
-                style="?android:attr/ratingBarStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:isIndicator="false"
-                android:numStars="5"
-                android:scaleX="1.0"
-                android:scaleY="1.0"
-                android:stepSize="0.5" />
-
-        </LinearLayout>
-
-
     </LinearLayout>
-
-    <!-- 📝 Review Input -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginTop="6dp">
-
-        <ImageView
-            android:id="@+id/btnUploadImageReview"
-            android:layout_width="45dp"
-            android:layout_height="38dp"
-            android:src="@drawable/ic_photo" />
-        <EditText
-            android:id="@+id/edtReview"
-            android:layout_width="308dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:background="@android:drawable/edit_text"
-            android:hint="Nhập đánh giá..."
-            android:padding="8dp"
-            android:textColor="#1569AB" />
-        <ImageButton
-            android:id="@+id/btnSubmitReview"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_send"
-            android:contentDescription="Gửi đánh giá"/>
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/img_send_review"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:scaleType="centerCrop"
-        android:src="@android:drawable/ic_menu_gallery"
-        android:background="#CCCCCC"
-        />
-
 </LinearLayout>

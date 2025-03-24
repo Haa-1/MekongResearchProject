@@ -7,6 +7,7 @@ public class OrderHistoryDisplay {
     private int quantity;
     private int totalPrice;
     private String orderId;
+    private String postId;
 
 
 
@@ -29,5 +30,6 @@ public class OrderHistoryDisplay {
     public int getQuantity() { return quantity; }
     public int getTotalPrice() { return totalPrice; }
     public String getOrderId() { return orderId; }
+    public String getPostId() { return postId; }
 }
 

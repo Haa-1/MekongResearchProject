@@ -1,21 +1,18 @@
-package com.example.researchproject.History;
+package com.example.researchproject.admin;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.researchproject.Payment.OrderItem;
+import com.example.researchproject.History.OrderHistoryActivity;
+import com.example.researchproject.History.OrderHistoryAdapter;
+import com.example.researchproject.History.OrderHistoryDetailActivity;
+import com.example.researchproject.History.OrderHistoryDisplay;
 import com.example.researchproject.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -29,52 +26,66 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderHistoryActivity extends AppCompatActivity {
+public class ManageOrderActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private OrderHistoryAdapter orderHistoryAdapter;
-    private List<OrderHistoryDisplay> orderHistoryList;
+    private RecyclerView recyclerViewOrders;
+    private OrderHistoryAdapter adapter;
+    private List<OrderHistoryDisplay> orderList;
+    private DatabaseReference orderRef;
+    private String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order_history);
+        setContentView(R.layout.activity_manage_order);
 
-        recyclerView = findViewById(R.id.recyclerViewOrders);
+        recyclerViewOrders = findViewById(R.id.recyclerViewOrder);
+        recyclerViewOrders.setLayoutManager(new LinearLayoutManager(this));
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        orderHistoryList = new ArrayList<>();
-        orderHistoryAdapter = new OrderHistoryAdapter(this, orderHistoryList, this::onOrderClicked);
-        Log.e("orderHistoryAdapter", orderHistoryAdapter.toString());
-        recyclerView.setAdapter(orderHistoryAdapter);
+        orderList = new ArrayList<>();
+        adapter = new OrderHistoryAdapter(this, orderList,this::onOrderClicked);
+        recyclerViewOrders.setAdapter(adapter);
 
-        loadOrderHistory();
+        // Nhận UID từ Intent
+        uid = getIntent().getStringExtra("uid");
+        Log.d("ManageOrderActivity", "UID: " + uid);
+        if (uid != null) {
+            orderRef = FirebaseDatabase.getInstance().getReference("Order_History").child(uid);
+            loadOrders();
+        } else {
+            Toast.makeText(this, "Không tìm thấy UID!", Toast.LENGTH_SHORT).show();
+        }
     }
+
     private void onOrderClicked(String orderId) {
-        Intent intent = new Intent(this, OrderHistoryDetailActivity.class);
+        Log.d("ManageOrderActivity", "Order ID clicked: " + orderId);
+        Intent intent = new Intent(this, OrderDetailAdminActivity.class);
         intent.putExtra("orderId", orderId);
+        intent.putExtra("uid", uid);
+        Log.d("ManageOrderActivity", "Order ID sent: " + orderId);
         startActivity(intent);
     }
-    private void loadOrderHistory() {
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference orderRef = FirebaseDatabase.getInstance().getReference("Order_History").child(userId);
+
+
+    private void loadOrders() {
+        DatabaseReference orderRef = FirebaseDatabase.getInstance().getReference("Order_History").child(uid);
         DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("Posts");
 
-        if (orderHistoryAdapter == null) {
+        if (adapter == null) {
             Log.e("ERROR", "orderHistoryAdapter is NULL before fetching data");
-            Log.e("orderHistoryAdapter", orderHistoryAdapter.toString());
+            Log.e("orderHistoryAdapter", adapter.toString());
             return;
         }
 
         orderRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                orderHistoryList.clear();
+                orderList.clear();
 
                 Log.d("DEBUG", "Snapshot: " + snapshot.getValue());
 
                 if (!snapshot.exists()) {
-                    Log.e("ERROR", "No order history found for user: " + userId);
+                    Log.e("ERROR", "No order history found for user: " + uid);
                     return;
                 }
                 for (DataSnapshot orderSnapshot : snapshot.getChildren()) {
@@ -122,14 +133,14 @@ public class OrderHistoryActivity extends AppCompatActivity {
 
                             // Tạo đối tượng hiển thị và cập nhật Adapter
                             OrderHistoryDisplay orderDisplay = new OrderHistoryDisplay(title, imageUrl, rentalPeriod, quantity, totalPrice,orderId);
-                            orderHistoryList.add(orderDisplay);
-                            orderHistoryAdapter.notifyDataSetChanged();
+                            orderList.add(orderDisplay);
+                            adapter.notifyDataSetChanged();
 
 
                             // Kiểm tra adapter trước khi cập nhật
-                            if (orderHistoryAdapter != null) {
-                                Log.d("DEBUG", "Updating adapter with " + orderHistoryList.size() + " items.");
-                                orderHistoryAdapter.notifyDataSetChanged();
+                            if (adapter != null) {
+                                Log.d("DEBUG", "Updating adapter with " + orderList.size() + " items.");
+                                adapter.notifyDataSetChanged();
                             } else {
                                 Log.e("ERROR", "orderHistoryAdapter is NULL when updating.");
                             }
@@ -137,7 +148,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-                            Toast.makeText(OrderHistoryActivity.this, "Lỗi tải dữ liệu Post", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ManageOrderActivity.this, "Lỗi tải dữ liệu Post", Toast.LENGTH_SHORT).show();
                             Log.e("ERROR", "Failed to load post data: " + error.getMessage());
                         }
                     });
@@ -145,12 +156,11 @@ public class OrderHistoryActivity extends AppCompatActivity {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(OrderHistoryActivity.this, "Lỗi tải lịch sử đặt hàng", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ManageOrderActivity.this, "Lỗi tải lịch sử đặt hàng", Toast.LENGTH_SHORT).show();
                 Log.e("ERROR", "Failed to load  order history: " + error.getMessage());
             }
         });
     }
-    // Hàm xử lý chuỗi số có đơn vị VNĐ
     private int parseSafeInt(String value) {
         if (value == null || value.isEmpty()) {
             return 0; // Trả về 0 nếu giá trị rỗng
@@ -164,6 +174,4 @@ public class OrderHistoryActivity extends AppCompatActivity {
             return 0; // Tránh crash, trả về 0 nếu lỗi
         }
     }
-
 }
-

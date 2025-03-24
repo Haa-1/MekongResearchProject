@@ -2,6 +2,7 @@ package com.example.researchproject.History;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,10 +23,16 @@ import java.util.List;
 public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapter.ViewHolder> {
     private Context context;
     private List<OrderHistoryDisplay> orderHistoryList;
+    private OnOrderClickListener listener;
 
-    public OrderHistoryAdapter(Context context, List<OrderHistoryDisplay> orderHistoryList) {
+
+    public OrderHistoryAdapter(Context context, List<OrderHistoryDisplay> orderHistoryList, OnOrderClickListener listener) {
         this.context = context;
         this.orderHistoryList = orderHistoryList;
+        this.listener = listener;
+    }
+    public interface OnOrderClickListener {
+        void onOrderClick(String orderId);
     }
 
     @NonNull
@@ -50,9 +57,8 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
                 .error(R.drawable.search_icon)
                 .into(holder.imgCar);
         holder.btnDetail.setOnClickListener(v -> {
-            Intent intent = new Intent(context, OrderHistoryDetailActivity.class);
-            intent.putExtra("orderId", order.getOrderId());
-            context.startActivity(intent);
+            Log.d("OrderHistoryAdapter", "Item clicked: " + order.getOrderId());
+            listener.onOrderClick(order.getOrderId());
         });
     }
 
