@@ -13,6 +13,8 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.researchproject.iam.Ad;
+import com.example.researchproject.iam.AdSliderAdapter;
 import com.example.researchproject.iam.CartActivity;
 import com.example.researchproject.iam.ChatAdapter;
 import com.example.researchproject.iam.ChatMessage;
@@ -46,8 +48,11 @@ public class MekoAI extends AppCompatActivity {
     private EditText edtUserQuery;
     private DatabaseReference databaseReference;
     private GridView gridView;
+    private RecyclerView recyclerViewAds;
     private PostAdapterGrid postAdapter;
     private List<Post> filteredFirebaseData = new ArrayList<>();
+    private List<Ad> filteredAdData = new ArrayList<>(); // To store filtered ads
+    private AdSliderAdapter adAdapter; // Adapter for RecyclerView
     private String geminiResponse = "";
     // Gemini API
     private final String API_KEY = "AIzaSyDXMP_Of_Bf5LK2yNFTRbs_fYrwx6DIyHE";
@@ -61,6 +66,7 @@ public class MekoAI extends AppCompatActivity {
         btnSearchAI = findViewById(R.id.btnSearchAI);
         edtUserQuery = findViewById(R.id.edtUserQuery);
         gridView = findViewById(R.id.gridView);
+        recyclerViewAds = findViewById(R.id.recyclerViewAds);
         String input = "Đi du lịch cần thơ rất thú vị, tôi cũng thích sóc trăng và huế.";
         List<String> suggestions = List.of(
                 "cần thơ", "sóc trăng", "huế", "xe", "du lịch",
@@ -75,7 +81,7 @@ public class MekoAI extends AppCompatActivity {
                 "ninh thuận", "phú thọ", "phú yên", "quảng bình", "quảng nam",
                 "quảng ngãi", "quảng ninh", "quảng trị", "sơn la", "tây ninh",
                 "thái bình", "thái nguyên", "thanh hoá", "thừa thiên huế", "tiền giang","nghĩ dưỡng","lễ","biển","giá",
-                "trà vinh", "thuê","chạy","thấp","tuyên quang", "vĩnh long", "vĩnh phúc", "yên bái"
+                "trà vinh", "hello","nihao","thuê","chạy","thấp","tuyên quang", "vĩnh long", "vĩnh phúc", "yên bái"
         );
         List<String> keywords = extractKeywords(input, suggestions);
         System.out.println(keywords);
@@ -89,11 +95,14 @@ public class MekoAI extends AppCompatActivity {
         txtSuggestion = findViewById(R.id.txtSuggestion);
         recyclerViewChat.setNestedScrollingEnabled(false);
         gridView.setNestedScrollingEnabled(false);
+        recyclerViewAds.setNestedScrollingEnabled(false);
         recyclerViewChat.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewChat.setAdapter(chatAdapter);
         // ✅ Kết nối Firebase
         databaseReference = FirebaseDatabase.getInstance().getReference("Posts");
         postAdapter = new PostAdapterGrid(this, filteredFirebaseData);
+        databaseReference  = FirebaseDatabase.getInstance().getReference("Ads"); // Reference for Ads
+        adAdapter = new AdSliderAdapter(this, filteredAdData);
         gridView.setAdapter(postAdapter);
         // 🎯 Bottom Navigation
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -146,7 +155,6 @@ public class MekoAI extends AppCompatActivity {
         }
         return keywords;
     }
-
     // 🔥 Firebase Query (Chỉ tìm từ khóa trong dấu ngoặc)
     private void fetchFilteredFirebase(String keyword) {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -233,13 +241,21 @@ public class MekoAI extends AppCompatActivity {
         });
     }
     private void sendUserMessage() {
-        String userMessage = edtUserQuery.getText().toString().trim();
+        // Khởi tạo RecyclerView và Adapter cho quảng cáo
+        RecyclerView recyclerViewAds = findViewById(R.id.recyclerViewAds);
+        adAdapter = new AdSliderAdapter(this, filteredAdData); // filteredAdData lưu danh sách quảng cáo
+        recyclerViewAds.setLayoutManager(new LinearLayoutManager(this)); // Hiển thị dạng danh sách dọc
+        recyclerViewAds.setAdapter(adAdapter);
+        // Xử lý thông điệp người dùng
+        String userMessage = edtUserQuery.getText().toString().trim(); // Nhập liệu từ người dùng
         if (!userMessage.isEmpty()) {
-            chatMessages.add(new ChatMessage(userMessage, true)); // Người dùng gửi
+            // Thêm vào giao diện chat
+            chatMessages.add(new ChatMessage(userMessage, true)); // Người dùng gửi tin nhắn
             chatAdapter.notifyItemInserted(chatMessages.size() - 1);
-            edtUserQuery.setText("");
+            edtUserQuery.setText(""); // Xóa nội dung sau khi gửi
             recyclerViewChat.scrollToPosition(chatMessages.size() - 1);
-            // ✅ Tạo danh sách các gợi ý từ khóa
+
+            // Danh sách từ khóa gợi ý
             List<String> suggestions = List.of(
                     "cần thơ", "sóc trăng", "huế", "xe", "du lịch",
                     "an giang", "vũng tàu", "bạc liêu", "bắc giang", "bắc kạn",
@@ -252,20 +268,23 @@ public class MekoAI extends AppCompatActivity {
                     "lào cai", "long an", "nam định", "nghệ an", "ninh bình",
                     "ninh thuận", "phú thọ", "phú yên", "quảng bình", "quảng nam",
                     "quảng ngãi", "quảng ninh", "quảng trị", "sơn la", "tây ninh",
-                    "thái bình", "thái nguyên", "thanh hoá", "thừa thiên huế", "tiền giang","nghĩ dưỡng","lễ","biển","giá",
-                    "trà vinh", "thuê","chạy","thấp","tuyên quang", "vĩnh long", "vĩnh phúc", "yên bái"
+                    "thái bình", "thái nguyên", "thanh hoá", "thừa thiên huế", "tiền giang", "nghĩ dưỡng", "lễ", "biển", "giá",
+                    "trà vinh", "thuê", "hello", "nihao", "thấp", "tuyên quang", "vĩnh long", "vĩnh phúc", "yên bái"
             );
-
-            // ✅ Xử lý từ khóa từ danh sách gợi ý
+            // Trích xuất từ khóa từ thông điệp
             List<String> keywords = extractKeywords(userMessage, suggestions);
             if (!keywords.isEmpty()) {
+                // Tìm kiếm và hiển thị quảng cáo cho từng từ khóa
                 for (String keyword : keywords) {
-                    fetchFilteredFirebase(keyword); // Tìm kiếm từng từ khóa
+                    // Lọc dữ liệu từ "Posts"
+                    fetchFilteredFirebase(keyword);
+                    // Lọc dữ liệu từ "Ads"
+                    fetchFilteredAds(keyword);
                 }
             } else {
                 Toast.makeText(this, "Bạn có thể đặt từ khóa trong dấu ngoặc đơn () để tìm kiếm dễ dàng hơn!", Toast.LENGTH_LONG).show();
             }
-            // ✅ Gửi yêu cầu đến Gemini API
+            // Gửi yêu cầu đến Gemini API (nếu cần)
             sendRequestToGemini(userMessage);
         }
     }
@@ -295,7 +314,34 @@ public class MekoAI extends AppCompatActivity {
         };
         handler.post(typingRunnable);
     }
-
+    private void fetchFilteredAds(String keyword) {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                filteredAdData.clear(); // Xóa trước khi thêm mới
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Ad ad = dataSnapshot.getValue(Ad.class);
+                    if (ad != null && containsKeywordAd(ad, keyword)) {
+                        filteredAdData.add(ad);
+                    }
+                }
+                adAdapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                runOnUiThread(() -> {
+                    chatMessages.add(new ChatMessage("❌ Hệ thống MekongGo đang bị Lỗi : " + error.getMessage(), false));
+                    chatAdapter.notifyItemInserted(chatMessages.size() - 1);
+                    recyclerViewChat.scrollToPosition(chatMessages.size() - 1);
+                });
+            }
+        });
+    }
+    // Helper method to check if Ad contains the keyword
+    private boolean containsKeywordAd(Ad ad, String keyword) {
+        return (ad.getTitle() != null && ad.getTitle().toLowerCase().contains(keyword.toLowerCase())) ||
+                (ad.getImageUrl() != null && ad.getImageUrl().toLowerCase().contains(keyword.toLowerCase()));
+    }
     // 🎯 Kiểm tra từ khóa trong tất cả các trường của Post
     private boolean containsKeyword(Post post, String keyword) {
         keyword = keyword.toLowerCase();
@@ -308,9 +354,11 @@ public class MekoAI extends AppCompatActivity {
     }
     private void showSuggestions() {
         txtSuggestion.setVisibility(View.VISIBLE);  // ✅ Hiển thị dòng chữ "Gợi ý cho bạn"
-        gridView.setVisibility(View.VISIBLE);       // ✅ Hiển thị GridView
+        gridView.setVisibility(View.VISIBLE);// ✅ Hiển thị GridView
+        recyclerViewAds.setVisibility(View.VISIBLE);
         // Nếu bạn cần cập nhật dữ liệu vào GridView
         postAdapter.notifyDataSetChanged();
+        adAdapter.notifyDataSetChanged();
         // ✅ Cuộn xuống để hiển thị GridView hoàn toàn
         nestedScrollView.post(() -> nestedScrollView.fullScroll(View.FOCUS_DOWN));
     }

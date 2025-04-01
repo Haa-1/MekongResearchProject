@@ -39,9 +39,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         holder.textViewEmail.setText(user.getEmail());
         holder.textViewRole.setText(user.getRole());
 
-        holder.btnProfile.setOnClickListener(v ->
-                Toast.makeText(context, "Xem hồ sơ: " + user.getEmail(), Toast.LENGTH_SHORT).show()
-        );
+        holder.btnProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(context, UserProfileActivity.class);
+            intent.putExtra("uid", user.getUid());
+            context.startActivity(intent);
+
+        });
 
         holder.btnOrder.setOnClickListener(v -> {
             Intent intent = new Intent(context, ManageOrderActivity.class);
