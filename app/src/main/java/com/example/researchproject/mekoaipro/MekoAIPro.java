@@ -98,7 +98,12 @@ public class MekoAIPro extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject();
             try {
                 JSONArray messages = new JSONArray();
-                // Thêm tất cả các tin nhắn trước đó vào danh sách
+                // 1. Định nghĩa vai trò (system)
+                JSONObject systemMessage = new JSONObject();
+                systemMessage.put("role", "system");
+                systemMessage.put("content", "Bạn là một trợ lý ảo thông minh của Trí Nhân tên là Meko.Trả lời nhiều thông tin bằng giọng miền tây Việt Nam một cách vui vẻ rõ ràng, xưng hô với người dùng là ' ní ' hoặc là ' Trí Nhân ', bắt đầu bằng'Phản hồi từ Meko:' và kết thúc bằng 'Ní cần hỗ trợ thêm gì không ?'.Thêm Icon vào câu trả lời\" ");
+                messages.put(systemMessage);
+                // 2. Lịch sử hội thoại (nếu cần)
                 for (ChatMessagePro chatMessage : chatMessages) {
                     JSONObject message = new JSONObject();
                     message.put("role", chatMessage.isUser() ? "user" : "assistant");
@@ -106,8 +111,7 @@ public class MekoAIPro extends AppCompatActivity {
                     messages.put(message);
                 }
                 // Ghép tiêu đề lấy từ Firebase vào câu hỏi của user
-                String combinedInput = question + "\n\n Gợi ý cho bạn: " + titles;
-
+                String combinedInput = question  + titles;
                 JSONObject currentMessage = new JSONObject();
                 currentMessage.put("role", "user");
                 currentMessage.put("content", combinedInput);
@@ -119,7 +123,7 @@ public class MekoAIPro extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
+            Log.d("OpenAIRequest",jsonObject.toString());
             RequestBody body = RequestBody.create(
                     jsonObject.toString(),
                     MediaType.parse("application/json; charset=utf-8")

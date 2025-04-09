@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ResearchProject</string>
+    <string name="app_name">MekongGo</string>
     <string name="title_activity_information">InformationActivity</string>
     <string name="title_home">Home</string>
     <string name="title_message">Message</string>
