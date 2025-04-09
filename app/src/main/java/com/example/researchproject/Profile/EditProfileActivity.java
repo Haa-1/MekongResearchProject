@@ -57,7 +57,6 @@ public class EditProfileActivity extends AppCompatActivity {
     private Uri imageUri;
     private FirebaseAuth auth;
     private DatabaseReference userRef;
-    private StorageReference storageRef;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int REQUEST_STORAGE_PERMISSION = 100;
